@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Тест курицы от ИИ</title>
+    <title>Курица — High Detail</title>
     <style>
         body {
             background: #1a2a1f;
@@ -26,7 +26,7 @@
     </style>
 </head>
 <body>
-    <h2>Курица от ИИ (тест)</h2>
+    <h2>Курица (Высокая детализация)</h2>
     <canvas id="gameCanvas" width="64" height="64"></canvas>
 
     <script>
@@ -34,94 +34,104 @@
         const ctx = canvas.getContext('2d');
 
         // ==========================================
-        // КОД ОТ ИИ (функция drawHen)
+        // НОВЫЙ КОД ОТ ИИ (Высокая детализация)
         // ==========================================
-        function drawHen(ctx, x, y, pixelSize = 2) {
-            const drawBlock = (relX, relY, width, height, color) => {
+        function drawAdvancedHen(ctx, x, y, p = 2) {
+            const block = (rx, ry, w, h, color) => {
                 ctx.fillStyle = color;
-                ctx.fillRect(x + relX * pixelSize, y + relY * pixelSize, width * pixelSize, height * pixelSize);
+                ctx.fillRect(x + rx * p, y + ry * p, w * p, h * p);
             };
 
-            const COLORS = {
-                outline: '#4A2E1B',
-                body: '#EAD3A8',
-                bodyShadow: '#CBB080',
-                wing: '#D8BC8F',
-                comb: '#D63031',
-                beak: '#E67E22',
-                eye: '#111111',
-                legs: '#F39C12'
+            const C = {
+                outDark:  '#311E11', outMid:   '#5C3A21', outLight: '#8C5A36',
+                featherLight: '#F3E5AB', featherBase:  '#D2B48C', featherShadow:'#B5946A', featherDeep:  '#8B6C47',
+                wingLight: '#E6C280', wingBase: '#C49A55', wingShadow: '#967033',
+                combLight: '#FF4D4D', combBase: '#C02929', combShadow:'#7A1313',
+                beakLight: '#FFAD33', beakBase: '#D37506',
+                legLight: '#FAB1A0', legBase: '#E67E22', legShadow: '#A75200'
             };
 
-            // 1. ГРЕБЕШОК И БОРОДКА
-            drawBlock(5, 1, 3, 1, COLORS.comb);
-            drawBlock(4, 2, 5, 1, COLORS.comb);
-            drawBlock(3, 5, 2, 2, COLORS.comb);
+            // 1. ГЛУБОКИЙ ЗАДНИЙ ПЛАН
+            block(15, 20, 1, 4, C.legShadow);
+            block(13, 23, 3, 1, C.legShadow);
+            block(23, 10, 2, 5, C.outMid);
 
-            // 2. КЛЮВ
-            drawBlock(1, 4, 3, 2, COLORS.beak);
-            drawBlock(2, 4, 2, 1, COLORS.outline);
+            // 2. ГРЕБЕНЬ И БОРОДКА
+            block(9, 2, 3, 1, C.combLight);
+            block(12, 3, 2, 1, C.combLight);
+            block(8, 3, 6, 2, C.combBase);
+            block(10, 5, 4, 1, C.combShadow);
+            block(7, 9, 2, 3, C.combLight);
+            block(8, 10, 2, 3, C.combBase);
 
-            // 3. ГОЛОВА И ШЕЯ
-            drawBlock(4, 3, 5, 4, COLORS.body);
-            drawBlock(5, 7, 4, 4, COLORS.body);
-            drawBlock(8, 5, 1, 6, COLORS.bodyShadow);
+            // 3. КЛЮВ
+            block(3, 7, 3, 1, C.beakLight);
+            block(2, 8, 4, 1, C.beakBase);
+            block(4, 9, 2, 1, C.outDark);
 
-            // 4. ТЕЛО
-            drawBlock(5, 11, 12, 6, COLORS.body);
-            drawBlock(6, 17, 10, 1, COLORS.bodyShadow);
-            drawBlock(17, 10, 2, 5, COLORS.body);
-            drawBlock(16, 9, 2, 2, COLORS.body);
+            // 4. ГОЛОВА И ШЕЯ
+            block(6, 4, 7, 5, C.featherLight);
+            block(7, 5, 6, 5, C.featherBase);
+            block(11, 4, 3, 6, C.featherShadow);
+            block(5, 9, 4, 4, C.featherLight);
+            block(7, 9, 5, 5, C.featherBase);
+            block(10, 10, 4, 5, C.featherShadow);
 
-            // 5. КРЫЛО
-            drawBlock(9, 12, 6, 4, COLORS.wing);
-            drawBlock(10, 13, 6, 2, COLORS.bodyShadow);
+            // 5. ГЛАЗ
+            block(6, 6, 1, 2, C.outDark);
+            block(6, 5, 1, 1, '#FFFFFF');
 
-            // 6. ГЛАЗ
-            drawBlock(4, 4, 1, 1, COLORS.eye);
+            // 6. ТЕЛО
+            block(4, 13, 5, 4, C.featherLight);
+            block(5, 12, 16, 7, C.featherBase);
+            block(8, 15, 15, 5, C.featherShadow);
+            block(12, 18, 10, 3, C.featherDeep);
 
-            // 7. ЛАПКИ
-            drawBlock(8, 18, 1, 3, COLORS.legs);
-            drawBlock(6, 20, 3, 1, COLORS.legs);
-            drawBlock(12, 18, 1, 3, COLORS.legs);
-            drawBlock(10, 20, 3, 1, COLORS.legs);
+            // 7. ХВОСТ
+            block(21, 9, 3, 3, C.featherBase);
+            block(22, 11, 3, 5, C.featherShadow);
+            block(20, 14, 4, 3, C.featherDeep);
 
-            // 8. КОНТУР
-            drawBlock(4, 2, 1, 1, COLORS.outline);
-            drawBlock(9, 3, 1, 4, COLORS.outline);
-            drawBlock(3, 3, 1, 2, COLORS.outline);
-            drawBlock(3, 5, 1, 2, COLORS.outline);
-            drawBlock(4, 7, 1, 4, COLORS.outline);
-            drawBlock(9, 10, 8, 1, COLORS.outline);
-            drawBlock(16, 8, 2, 1, COLORS.outline);
-            drawBlock(18, 9, 1, 5, COLORS.outline);
-            drawBlock(17, 14, 1, 2, COLORS.outline);
-            drawBlock(4, 11, 2, 1, COLORS.outline);
-            drawBlock(4, 12, 1, 3, COLORS.outline);
-            drawBlock(5, 15, 1, 2, COLORS.outline);
-            drawBlock(6, 17, 1, 1, COLORS.outline);
-            drawBlock(7, 18, 4, 1, COLORS.outline);
-            drawBlock(11, 18, 2, 1, COLORS.outline);
-            drawBlock(13, 17, 4, 1, COLORS.outline);
-            drawBlock(9, 11, 5, 1, COLORS.outline);
-            drawBlock(8, 12, 1, 3, COLORS.outline);
-            drawBlock(9, 15, 6, 1, COLORS.outline);
-            drawBlock(15, 12, 1, 3, COLORS.outline);
+            // 8. КРЫЛО
+            block(10, 13, 8, 4, C.wingLight);
+            block(9, 14, 9, 4, C.wingBase);
+            block(11, 17, 7, 2, C.wingShadow);
+
+            // 9. ЛАПА
+            block(11, 20, 2, 4, C.legBase);
+            block(11, 20, 1, 3, C.legLight);
+            block(9, 23, 4, 1, C.legBase);
+            block(9, 23, 2, 1, C.legLight);
+            block(13, 22, 1, 1, C.legShadow);
+
+            // 10. КОНТУР
+            block(9, 3, 4, 1, C.outLight);
+            block(13, 4, 1, 4, C.outLight);
+            block(14, 8, 4, 1, C.outLight);
+            block(18, 9, 4, 1, C.outLight);
+            block(22, 8, 2, 1, C.outLight);
+            block(25, 9, 1, 5, C.outMid);
+            block(24, 14, 1, 3, C.outMid);
+            block(4, 12, 2, 1, C.outMid);
+            block(3, 13, 1, 3, C.outMid);
+            block(4, 16, 1, 2, C.outDark);
+            block(5, 18, 3, 1, C.outDark);
+            block(8, 19, 4, 1, C.outDark);
+            block(12, 21, 9, 1, C.outDark);
+            block(21, 20, 2, 1, C.outDark);
+            block(23, 17, 1, 3, C.outDark);
         }
 
         // ==========================================
         // ОТРИСОВКА
         // ==========================================
         function render() {
-            // Очищаем холст (фон)
             ctx.fillStyle = '#2d3e2d';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Центрируем курицу. 
-            // Спрайт занимает ~20 пикселей в ширину (с pixelSize=2 это 40px).
-            // На холсте 64x64 отступ слева и сверху примерно (64 - 40) / 2 = 12.
-            // Но поскольку курица рисуется от x,y, дадим отступ 10.
-            drawHen(ctx, 10, 10, 2);
+            // Центрируем курицу. Спрайт занимает около 24 пикселей в ширину * 2 = 48.
+            // (64 - 48) / 2 = 8.
+            drawAdvancedHen(ctx, 6, 4, 2);
         }
 
         render();
