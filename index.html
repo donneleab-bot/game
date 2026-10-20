@@ -1,73 +1,622 @@
-# Так как вы просили код, вот скрипт, который сгенерировал этот спрайт-лист.
-# Вы можете запустить его у себя, если захотите вручную подправить пиксели в матрицах.
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Пиксельные курицы — стадии жизни</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
+    body {
+      background: #1a2a1f;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 20px;
+    }
+    .game-container {
+      background: #2d3e2d;
+      border: 8px solid #5a7a4a;
+      border-radius: 30px;
+      padding: 30px 40px 40px 40px;
+      box-shadow: 0 0 0 4px #1e2a1a, 0 20px 30px rgba(0, 0, 0, 0.5);
+    }
+    h1 {
+      color: #f0e8c0;
+      text-align: center;
+      font-size: 28px;
+      letter-spacing: 3px;
+      margin-top: 0;
+      margin-bottom: 25px;
+      text-shadow: 4px 4px 0 #3a4a2a, 2px 2px 0 #7a9a5a;
+      font-weight: 800;
+    }
+    .gender-row {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    .gender-label {
+      color: #e0d8b0;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      background: #4a5e3a;
+      padding: 6px 30px;
+      border-radius: 40px;
+      border: 3px solid #7a9a5a;
+      letter-spacing: 2px;
+      box-shadow: inset 0 -4px 0 #2a3a1a;
+    }
+    .stages-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+    .stage-card {
+      background: #3a4e2e;
+      border-radius: 20px;
+      padding: 12px 8px 8px 8px;
+      box-shadow: 0 8px 0 #1e2a14, 0 12px 12px rgba(0, 0, 0, 0.3);
+      border: 3px solid #7a9a5a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 120px;
+      transition: transform 0.1s;
+    }
+    .stage-card.male {
+      border-color: #5a7a9a;
+    }
+    .stage-card.female {
+      border-color: #9a6a7a;
+    }
+    .stage-name {
+      color: #f0e8c0;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      text-align: center;
+      letter-spacing: 0.5px;
+      background: #2a3a1e;
+      padding: 3px 10px;
+      border-radius: 12px;
+      width: 100%;
+      white-space: nowrap;
+      box-shadow: inset 0 2px 0 #5a7a4a;
+    }
+    canvas {
+      image-rendering: crisp-edges;
+      image-rendering: pixelated;
+      width: 96px;
+      height: 96px;
+      display: block;
+      background: #1e2a14;
+      border-radius: 10px;
+      padding: 4px;
+      box-shadow: inset 0 0 0 3px #4a5e3a;
+    }
+    .footer {
+      text-align: center;
+      color: #9ab88a;
+      font-size: 14px;
+      margin-top: 20px;
+      border-top: 3px solid #4a6e3a;
+      padding-top: 16px;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+<div class="game-container">
+  <h1>🐔 ВЫЖИВАНИЕ КУРИЦ 🐔</h1>
 
-import os
-from PIL import Image
+  <!-- МУЖСКОЙ РЯД -->
+  <div class="gender-row">
+    <div class="gender-label">ПЕТУХИ (M)</div>
+  </div>
+  <div class="stages-row" id="maleRow"></div>
 
-os.makedirs("generated", exist_ok=True)
+  <!-- ЖЕНСКИЙ РЯД -->
+  <div class="gender-row">
+    <div class="gender-label">КУРИЦЫ (Ж)</div>
+  </div>
+  <div class="stages-row" id="femaleRow"></div>
 
-# Каждая стадия вписана в сетку 16x16 для идеальной детализации (как во 2-м примере)
-# Символы: . = прозрачно, 1-4 = градиент тела, R/r = гребень, O/o = клюв/лапы, B = глаз
-matrices = {
-    "egg": [
-        "................", "......OOOO......", "....OOOOOOOO....", "...OOOOOOOOOO...",
-        "..OOOOOOOOOOOO..", "..OOOOOOOOOOOO..", "..OOOOOOOOOOOO..", "..OOOOOOOOOOOO..",
-        "..OOOOOOOOOOOO..", "...OOOOOOOOOO...", "....OOOOOOOO....", "......OOOO......",
-        "................", "................", "................", "................"
-    ],
-    "wet_chick": [
-        "................", "......2222......", ".....222222.....", "....222B22OO....",
-        "....222222......", "...O2222222O....", "..OOOOOOOOOO....", ".OOOOOOOOOOOO...",
-        "OOOOOOOOOOOOOO..", "OOOOOOOOOOOOOO..", ".OOOOOOOOOOOO...", "..OOOOOOOOOO....",
-        "....oo..oo......", "....oo..oo......", "................", "................"
-    ],
-    "chick": [
-        "................", "......2222......", ".....222222.....", "....222B22OO....",
-        "....222222......", "....222222......", "....222222......", "...22222222.....",
-        "..2222222222....", ".222222222222...", "....oo..oo......", "....oo..oo......",
-        "....oo..oo......", "...ooo..ooo.....", "................", "................"
-    ],
-    "teen": [
-        "......R.........", ".....222........", "....22222.......", "....22B22O......",
-        "....22222.......", "....22222.......", "...2222222......", "..222222222.....",
-        ".22222222222....", "2222222222222...", "2222222222222...", "222222222222....",
-        ".2222222222.....", "....oo..oo......", "....oo..oo......", "...ooo..ooo....."
-    ],
-    "adult": [
-        "......RR........", ".....RRRR.......", ".....2222.......", "....22B22OO.....",
-        "....22rr22......", "....222222......", "...22222222.....", "..2222222222....",
-        ".222233322222...", "22223333322222..", "22223333322222..", "2222233322222...",
-        ".22222222222....", "....oo..oo......", "....oo..oo......", "...ooo..ooo....."
-    ],
-    "old": [
-        "......RR........", ".....RRRR.......", ".....4444.......", "....44B44OO.....",
-        "....44rr44......", "....444444......", "...44444444.....", "..4444444444....",
-        ".444422244444...", "44442222244444..", "44442222244444..", "4444422244444...",
-        ".44444444444....", "....oo..oo......", "....oo..oo......", "...ooo..ooo....."
-    ]
-}
+  <div class="footer">пиксельные модели 16x16 • стадии жизни</div>
+</div>
 
-# Палитра для сборки базового атласа
-colors = {
-    '.': (0, 0, 0, 0),
-    '1': (255, 255, 255, 255), '2': (245, 230, 180, 255), '3': (225, 200, 130, 255), '4': (185, 160, 110, 255),
-    'R': (230, 40, 40, 255), 'r': (180, 20, 20, 255),
-    'O': (250, 180, 50, 255), 'o': (220, 130, 30, 255), 'ooo': (220, 130, 30, 255),
-    'B': (20, 20, 20, 255)
-}
+<script>
+  (function(){
+    // ========== ОБЩИЕ НАСТРОЙКИ ==========
+    const SIZE = 16;          // логический размер модели 16x16
+    const SCALE = 6;         // масштаб для canvas (96px)
 
-# Создаем один общий спрайт-лист (6 стадий в ряд, каждая 16x16 -> итого 96x16)
-spritesheet = Image.new("RGBA", (96, 16), (0, 0, 0, 0))
+    // Палитра цветов (общая)
+    const COLORS = {
+      // яйцо
+      eggShell: '#f0e8c8',
+      eggShade: '#c8b890',
+      eggSpot: '#e0d0a0',
+      eggDark: '#a89060',
+      eggCrack: '#7a5a3a',
+      // цыплёнок / общие
+      chickYellow: '#f8e870',
+      chickLight: '#fff0a0',
+      chickDark: '#e0c040',
+      chickBeak: '#f0a030',
+      chickEye: '#202020',
+      chickWhite: '#ffffff',
+      // взрослые / подростки
+      maleRed: '#c04020',
+      maleRedDark: '#902010',
+      maleComb: '#e84020',
+      maleCombLight: '#f87040',
+      femaleBrown: '#b08050',
+      femaleBrownLight: '#d0a070',
+      femaleBrownDark: '#806030',
+      // старость
+      oldGrey: '#b0a898',
+      oldGreyLight: '#d0c8b8',
+      oldGreyDark: '#807868',
+      // смерть
+      dyingGrey: '#887870',
+      dyingDark: '#584838',
+      dyingLight: '#a89888',
+      // прочее
+      black: '#202020',
+      white: '#f8f8f8',
+      transparent: null
+    };
 
-for idx, (stage_name, matrix) in enumerate(matrices.items()):
-    stage_img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
-    pixels = stage_img.load()
-    for y in range(16):
-        for x in range(16):
-            char = matrix[y][x]
-            pixels[x, y] = colors.get(char, (0, 0, 0, 0))
-    spritesheet.paste(stage_img, (idx * 16, 0))
+    // ========== ФУНКЦИЯ ОТРИСОВКИ ПИКСЕЛЯ ==========
+    function drawPixel(ctx, x, y, color) {
+      if (color) {
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, 1, 1);
+      }
+    }
 
-# Увеличиваем в 2 раза для четкого пиксель-арта на экранах смартфонов (192x32)
-final_sheet = spritesheet.resize((192, 32), Image.Resampling.NEAREST)
-final_sheet.save("generated/chicken_evolution_spritesheet.png")
+    // ========== МОДЕЛИ (16x16) ==========
+    // Каждая модель — массив строк, где каждая строка — 16 символов.
+    // Символы: 
+    //  ' ' — прозрачный
+    //  'E' — скорлупа яйца
+    //  'e' — тень скорлупы
+    //  's' — пятно на яйце
+    //  'd' — тёмная скорлупа
+    //  'c' — трещина
+    //  'Y' — жёлтый цыплёнок
+    //  'y' — светлый жёлтый
+    //  'w' — тёмно-жёлтый
+    //  'B' — клюв
+    //  'K' — глаз чёрный
+    //  'W' — белый блик
+    //  'R' — красный гребень (петух)
+    //  'r' — тёмно-красный
+    //  'L' — светлый гребень
+    //  'M' — коричневый (курица)
+    //  'm' — светлый коричневый
+    //  'n' — тёмный коричневый
+    //  'G' — серый (старый)
+    //  'g' — светлый серый
+    //  'h' — тёмный серый
+    //  'D' — умирающий тёмный
+    //  'F' — умирающий светлый
+    //  'X' — умирающий средний
+
+    // ---------- ЯЙЦО ----------
+    const EGG = [
+      "                ",
+      "      EEEE      ",
+      "    EEEEEEEE    ",
+      "   EEEEEEEEEE   ",
+      "  EEEsEEEEEEEE  ",
+      "  EEsEEEEEEEEE  ",
+      "  EEEEEEEEdEEE  ",
+      "  EEEEEEEEEEEe  ",
+      "  EEEEEEEEEEEe  ",
+      "  EEEEEEEEEEee  ",
+      "   EEEEEEEEEe   ",
+      "    EEEEEEEe    ",
+      "     EEEEEe     ",
+      "      EEEE      ",
+      "                ",
+      "                "
+    ];
+
+    // ---------- ЦЫПЛЁНОК (только что вылупился) ----------
+    const CHICK_HATCHED = [
+      "                ",
+      "      YYYY      ",
+      "     YYYYYY     ",
+      "    YYYYYYYY    ",
+      "   YYYKYYKYYY   ",
+      "   YYYBYYBYYY   ",
+      "   YYYYYYYYYY   ",
+      "    YYYYYYYY    ",
+      "     YYYYYY     ",
+      "     YYYYYY     ",
+      "     YYYYYY     ",
+      "    YYYYYYYY    ",
+      "    YYYYYYYY    ",
+      "     YYYYYY     ",
+      "      YYYY      ",
+      "                "
+    ];
+
+    // ---------- ОБЫЧНЫЙ ЦЫПЛЁНОК (подросший) ----------
+    const CHICK_NORMAL = [
+      "                ",
+      "      YYYY      ",
+      "     YYYYYY     ",
+      "    YYYYYYYY    ",
+      "   YYYKYYKYYY   ",
+      "   YYYBYYBYYY   ",
+      "   YYYYYYYYYY   ",
+      "    YYYYYYYY    ",
+      "     YYYYYY     ",
+      "     YYYYYY     ",
+      "    YYYYYYYY    ",
+      "    YYYYYYYY    ",
+      "    YYYYYYYY    ",
+      "     YYYYYY     ",
+      "      YYYY      ",
+      "                "
+    ];
+
+    // ---------- ПОДРОСТОК (петух) ----------
+    const TEEN_MALE = [
+      "                ",
+      "      RRRR      ",
+      "     RRRRRR     ",
+      "    RRRRRRRR    ",
+      "   RRRRKRRKRRR  ",
+      "   RRRRBRRBRRR  ",
+      "   RRRRRRRRRRR  ",
+      "    RRRRRRRR    ",
+      "     RRRRRR     ",
+      "     RRRRRR     ",
+      "     RRRRRR     ",
+      "    RRRRRRRR    ",
+      "    RRRRRRRR    ",
+      "     RRRRRR     ",
+      "      RRRR      ",
+      "                "
+    ];
+
+    // ---------- ПОДРОСТОК (курица) ----------
+    const TEEN_FEMALE = [
+      "                ",
+      "      MMMM      ",
+      "     MMMMMM     ",
+      "    MMMMMMMM    ",
+      "   MMMMKMMKMMM  ",
+      "   MMMMBMMBMMM  ",
+      "   MMMMMMMMMMM  ",
+      "    MMMMMMMM    ",
+      "     MMMMMM     ",
+      "     MMMMMM     ",
+      "     MMMMMM     ",
+      "    MMMMMMMM    ",
+      "    MMMMMMMM    ",
+      "     MMMMMM     ",
+      "      MMMM      ",
+      "                "
+    ];
+
+    // ---------- ВЗРОСЛЫЙ ПЕТУХ ----------
+    const ADULT_MALE = [
+      "                ",
+      "      RRRR      ",
+      "     RRRRRR     ",
+      "    RRRRRRRR    ",
+      "   RRRRKRRKRRR  ",
+      "   RRRRBRRBRRR  ",
+      "   RRRRRRRRRRR  ",
+      "    RRRRRRRR    ",
+      "    RRRRRRRR    ",
+      "    RRRRRRRR    ",
+      "    RRRRRRRR    ",
+      "    RRRRRRRR    ",
+      "    RRRRRRRR    ",
+      "    RRRRRRRR    ",
+      "     RRRRRR     ",
+      "      RRRR      "
+    ];
+
+    // ---------- ВЗРОСЛАЯ КУРИЦА ----------
+    const ADULT_FEMALE = [
+      "                ",
+      "      MMMM      ",
+      "     MMMMMM     ",
+      "    MMMMMMMM    ",
+      "   MMMMKMMKMMM  ",
+      "   MMMMBMMBMMM  ",
+      "   MMMMMMMMMMM  ",
+      "    MMMMMMMM    ",
+      "    MMMMMMMM    ",
+      "    MMMMMMMM    ",
+      "    MMMMMMMM    ",
+      "    MMMMMMMM    ",
+      "    MMMMMMMM    ",
+      "    MMMMMMMM    ",
+      "     MMMMMM     ",
+      "      MMMM      "
+    ];
+
+    // ---------- СТАРЫЙ ПЕТУХ ----------
+    const OLD_MALE = [
+      "                ",
+      "      GGGG      ",
+      "     GGGGGG     ",
+      "    GGGGGGGG    ",
+      "   GGGGKGGKGGG  ",
+      "   GGGGBGGBGGG  ",
+      "   GGGGGGGGGGG  ",
+      "    GGGGGGGG    ",
+      "    GGGGGGGG    ",
+      "    GGGGGGGG    ",
+      "    GGGGGGGG    ",
+      "    GGGGGGGG    ",
+      "    GGGGGGGG    ",
+      "    GGGGGGGG    ",
+      "     GGGGGG     ",
+      "      GGGG      "
+    ];
+
+    // ---------- СТАРАЯ КУРИЦА ----------
+    const OLD_FEMALE = [
+      "                ",
+      "      GGGG      ",
+      "     GGGGGG     ",
+      "    GGGGGGGG    ",
+      "   GGGGKGGKGGG  ",
+      "   GGGGBGGBGGG  ",
+      "   GGGGGGGGGGG  ",
+      "    GGGGGGGG    ",
+      "    GGGGGGGG    ",
+      "    GGGGGGGG    ",
+      "    GGGGGGGG    ",
+      "    GGGGGGGG    ",
+      "    GGGGGGGG    ",
+      "    GGGGGGGG    ",
+      "     GGGGGG     ",
+      "      GGGG      "
+    ];
+
+    // ---------- УМИРАЮЩИЙ ПЕТУХ (или курица — почти одинаковы, отличаются только гребнем/цветом) ----------
+    const DYING_MALE = [
+      "                ",
+      "      DDDD      ",
+      "     DDDDDD     ",
+      "    DDDDDDDD    ",
+      "   DDDDKDDKDDD  ",
+      "   DDDDBDDBDDD  ",
+      "   DDDDDDDDDDD  ",
+      "    DDDDDDDD    ",
+      "    DDDDDDDD    ",
+      "    DDDDDDDD    ",
+      "    DDDDDDDD    ",
+      "    DDDDDDDD    ",
+      "    DDDDDDDD    ",
+      "    DDDDDDDD    ",
+      "     DDDDDD     ",
+      "      DDDD      "
+    ];
+
+    const DYING_FEMALE = [
+      "                ",
+      "      DDDD      ",
+      "     DDDDDD     ",
+      "    DDDDDDDD    ",
+      "   DDDDKDDKDDD  ",
+      "   DDDDBDDBDDD  ",
+      "   DDDDDDDDDDD  ",
+      "    DDDDDDDD    ",
+      "    DDDDDDDD    ",
+      "    DDDDDDDD    ",
+      "    DDDDDDDD    ",
+      "    DDDDDDDD    ",
+      "    DDDDDDDD    ",
+      "    DDDDDDDD    ",
+      "     DDDDDD     ",
+      "      DDDD      "
+    ];
+
+    // ========== МАППИНГ СИМВОЛОВ В ЦВЕТА ==========
+    // Учитываем контекст: для каждой модели свой набор, но используем общий словарь с проверкой.
+    function getColorForChar(ch, modelType) {
+      // modelType: 'egg', 'chick', 'teen_m', 'teen_f', 'adult_m', 'adult_f', 'old_m', 'old_f', 'dying_m', 'dying_f'
+      // Но проще использовать общий маппинг, где некоторые символы имеют разные цвета в зависимости от модели? 
+      // Сделаем чуть иначе: для каждого символа возвращаем цвет, но для 'R' и 'M' и 'G' и 'D' используем разные оттенки в зависимости от типа.
+      // Однако для простоты назначим конкретные цвета для каждого символа в рамках модели.
+      // Но чтобы не дублировать, определим цвета для символов с учётом модели через отдельные константы.
+
+      // Для яйца
+      if (modelType === 'egg') {
+        switch(ch) {
+          case 'E': return COLORS.eggShell;
+          case 'e': return COLORS.eggShade;
+          case 's': return COLORS.eggSpot;
+          case 'd': return COLORS.eggDark;
+          case 'c': return COLORS.eggCrack;
+          default: return null;
+        }
+      }
+
+      // Для цыплят (chick_hatched, chick_normal)
+      if (modelType === 'chick') {
+        switch(ch) {
+          case 'Y': return COLORS.chickYellow;
+          case 'y': return COLORS.chickLight;
+          case 'w': return COLORS.chickDark;
+          case 'B': return COLORS.chickBeak;
+          case 'K': return COLORS.chickEye;
+          case 'W': return COLORS.chickWhite;
+          default: return null;
+        }
+      }
+
+      // Для подростков и взрослых и старых — используем половые цвета
+      // Определим цветовую схему в зависимости от модели
+      const isMale = modelType.includes('male') || modelType.includes('_m');
+      const isFemale = modelType.includes('female') || modelType.includes('_f');
+      const isOld = modelType.includes('old');
+      const isDying = modelType.includes('dying');
+      
+      // Базовые цвета
+      let mainColor, lightColor, darkColor, combColor, combLight;
+      
+      if (isDying) {
+        mainColor = COLORS.dyingGrey;
+        lightColor = COLORS.dyingLight;
+        darkColor = COLORS.dyingDark;
+        combColor = COLORS.dyingDark;
+        combLight = COLORS.dyingGrey;
+      } else if (isOld) {
+        mainColor = COLORS.oldGrey;
+        lightColor = COLORS.oldGreyLight;
+        darkColor = COLORS.oldGreyDark;
+        combColor = COLORS.oldGreyDark;
+        combLight = COLORS.oldGrey;
+      } else if (isMale) {
+        mainColor = COLORS.maleRed;
+        lightColor = COLORS.maleCombLight;
+        darkColor = COLORS.maleRedDark;
+        combColor = COLORS.maleComb;
+        combLight = COLORS.maleCombLight;
+      } else { // female
+        mainColor = COLORS.femaleBrown;
+        lightColor = COLORS.femaleBrownLight;
+        darkColor = COLORS.femaleBrownDark;
+        combColor = COLORS.femaleBrownDark;
+        combLight = COLORS.femaleBrownLight;
+      }
+
+      // Теперь маппинг символов
+      switch(ch) {
+        // Гребень / основная часть (для петуха R, для курицы M и т.д.)
+        case 'R': 
+        case 'M': 
+        case 'G': 
+        case 'D': 
+          return mainColor;
+        case 'r': 
+        case 'm': 
+        case 'g': 
+        case 'F': 
+          return lightColor;
+        case 'n': 
+        case 'h': 
+        case 'X': 
+          return darkColor;
+        // Клюв и глаза — общие
+        case 'B': return COLORS.chickBeak;
+        case 'K': return COLORS.chickEye;
+        case 'W': return COLORS.white;
+        // Специальные для гребня (если есть отдельные символы)
+        case 'L': return combLight;
+        // Для яйца и цыплёнка уже обработано
+        default: return null;
+      }
+    }
+
+    // ========== ОТРИСОВКА МОДЕЛИ НА CANVAS ==========
+    function renderModel(canvas, model, modelType) {
+      const ctx = canvas.getContext('2d');
+      // Очищаем
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Рисуем пиксели
+      for (let y = 0; y < SIZE; y++) {
+        const row = model[y] || '';
+        for (let x = 0; x < SIZE; x++) {
+          const ch = row[x] || ' ';
+          if (ch === ' ') continue;
+          const color = getColorForChar(ch, modelType);
+          if (color) {
+            drawPixel(ctx, x, y, color);
+          }
+        }
+      }
+    }
+
+    // ========== СОЗДАНИЕ DOM ЭЛЕМЕНТОВ ==========
+    function createStageCard(stageName, model, modelType, genderClass) {
+      const card = document.createElement('div');
+      card.className = `stage-card ${genderClass}`;
+      
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'stage-name';
+      nameDiv.textContent = stageName;
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = SIZE * SCALE;
+      canvas.height = SIZE * SCALE;
+      // Для чёткости пикселей
+      canvas.style.imageRendering = 'pixelated';
+      
+      // Рендерим
+      renderModel(canvas, model, modelType);
+      
+      card.appendChild(nameDiv);
+      card.appendChild(canvas);
+      return card;
+    }
+
+    // ========== ЗАПОЛНЕНИЕ РЯДОВ ==========
+    const maleRow = document.getElementById('maleRow');
+    const femaleRow = document.getElementById('femaleRow');
+
+    // Мужские стадии
+    const maleStages = [
+      { name: 'ЯЙЦО', model: EGG, type: 'egg' },
+      { name: 'ЦЫПЛЁНОК', model: CHICK_HATCHED, type: 'chick' },
+      { name: 'ЦЫПЛЁНОК', model: CHICK_NORMAL, type: 'chick' },
+      { name: 'ПОДРОСТОК', model: TEEN_MALE, type: 'teen_m' },
+      { name: 'ВЗРОСЛЫЙ', model: ADULT_MALE, type: 'adult_m' },
+      { name: 'СТАРЫЙ', model: OLD_MALE, type: 'old_m' },
+      { name: 'УМИРАЮЩИЙ', model: DYING_MALE, type: 'dying_m' }
+    ];
+
+    // Женские стадии
+    const femaleStages = [
+      { name: 'ЯЙЦО', model: EGG, type: 'egg' },
+      { name: 'ЦЫПЛЁНОК', model: CHICK_HATCHED, type: 'chick' },
+      { name: 'ЦЫПЛЁНОК', model: CHICK_NORMAL, type: 'chick' },
+      { name: 'ПОДРОСТОК', model: TEEN_FEMALE, type: 'teen_f' },
+      { name: 'ВЗРОСЛАЯ', model: ADULT_FEMALE, type: 'adult_f' },
+      { name: 'СТАРАЯ', model: OLD_FEMALE, type: 'old_f' },
+      { name: 'УМИРАЮЩАЯ', model: DYING_FEMALE, type: 'dying_f' }
+    ];
+
+    // Очищаем и заполняем
+    maleRow.innerHTML = '';
+    femaleRow.innerHTML = '';
+
+    maleStages.forEach(stage => {
+      maleRow.appendChild(createStageCard(stage.name, stage.model, stage.type, 'male'));
+    });
+
+    femaleStages.forEach(stage => {
+      femaleRow.appendChild(createStageCard(stage.name, stage.model, stage.type, 'female'));
+    });
+
+    // Дополнительно: можно чуть улучшить отрисовку некоторых моделей, но пока оставим так.
+    // Для наглядности различий между полами у цыплят и яиц — они одинаковые (это нормально).
+    // Подростки, взрослые, старые, умирающие — различаются цветом и гребнем (у петуха R, у курицы M).
+
+  })();
+</script>
+</body>
+</html>
