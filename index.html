@@ -1,434 +1,403 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Пиксельные курицы — Точный референс</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            user-select: none;
-        }
-        body {
-            background-color: #121a14;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            background-color: #1e2a1e;
-            border: 6px solid #3a4e3a;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 0 0 4px #0a100a, 0 20px 40px rgba(0,0,0,0.8);
-            max-width: 1400px;
-        }
-        h1 {
-            color: #e8e0c0;
-            text-align: center;
-            font-size: 24px;
-            letter-spacing: 2px;
-            margin-top: 0;
-            margin-bottom: 25px;
-        }
-        .row {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        .label {
-            text-align: center;
-            color: #b8c8a8;
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            background: #2a3a2a;
-            padding: 4px 20px;
-            border-radius: 20px;
-            border: 2px solid #4a5e4a;
-            display: inline-block;
-        }
-        .card {
-            background-color: #253525;
-            border-radius: 12px;
-            padding: 10px;
-            border: 2px solid #4a5e4a;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 140px;
-            box-shadow: 0 6px 0 #101a10;
-        }
-        .card.male { border-color: #4a6a8a; }
-        .card.female { border-color: #8a5a6a; }
-        .card-title {
-            color: #b8c8a8;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            background: #152015;
-            padding: 4px 8px;
-            border-radius: 6px;
-            width: 100%;
-            text-align: center;
-        }
-        canvas {
-            background-color: #1a241a;
-            border-radius: 8px;
-            image-rendering: pixelated;
-            width: 112px;
-            height: 112px;
-        }
-        .footer {
-            text-align: center;
-            color: #5a7a5a;
-            font-size: 12px;
-            margin-top: 20px;
-            border-top: 2px solid #2a3a2a;
-            padding-top: 15px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Процедурные пиксельные курицы</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
+    body {
+      background: #121a14;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    .game-container {
+      background: #1e2a1e;
+      border: 6px solid #3a4e3a;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 0 0 4px #0a100a, 0 20px 40px rgba(0, 0, 0, 0.8);
+      max-width: 1400px;
+    }
+    h1 {
+      color: #e8e0c0;
+      text-align: center;
+      font-size: 26px;
+      letter-spacing: 2px;
+      margin-top: 0;
+      margin-bottom: 25px;
+      text-shadow: 3px 3px 0 #1a2a1a;
+    }
+    .gender-row {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+    .gender-label {
+      color: #c8d0b8;
+      font-size: 16px;
+      font-weight: bold;
+      background: #2a3a2a;
+      padding: 6px 30px;
+      border-radius: 20px;
+      border: 2px solid #4a5e4a;
+      letter-spacing: 1px;
+    }
+    .stages-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .stage-card {
+      background: #253525;
+      border-radius: 12px;
+      padding: 10px 6px 6px 6px;
+      box-shadow: 0 6px 0 #101a10;
+      border: 2px solid #4a5e4a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 150px;
+      transition: transform 0.1s;
+    }
+    .stage-card:hover {
+      transform: translateY(-4px);
+    }
+    .stage-card.male { border-color: #4a6a8a; }
+    .stage-card.female { border-color: #8a5a6a; }
+    .stage-name {
+      color: #b8c8a8;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      text-align: center;
+      background: #152015;
+      padding: 4px 8px;
+      border-radius: 6px;
+      width: 100%;
+      white-space: nowrap;
+    }
+    canvas {
+      image-rendering: crisp-edges;
+      image-rendering: pixelated;
+      width: 128px;
+      height: 128px;
+      display: block;
+      background: #0a100a;
+      border-radius: 8px;
+      box-shadow: inset 0 0 0 2px #2a3a2a;
+    }
+    .footer {
+      text-align: center;
+      color: #5a7a5a;
+      font-size: 13px;
+      margin-top: 20px;
+      border-top: 2px solid #2a3a2a;
+      padding-top: 15px;
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-    <h1>🐔 ВЫЖИВАНИЕ КУРИЦ 🐔</h1>
+<div class="game-container">
+  <h1>🐔 ЭВОЛЮЦИЯ КУРИЦ (ПРОЦЕДУРНАЯ ГЕНЕРАЦИЯ) 🐔</h1>
 
-    <div style="text-align: center;"><div class="label">ПЕТУХИ (M)</div></div>
-    <div class="row" id="maleRow"></div>
+  <div class="gender-row">
+    <div class="gender-label">ПЕТУХИ (M)</div>
+  </div>
+  <div class="stages-row" id="maleRow"></div>
 
-    <div style="text-align: center;"><div class="label">КУРИЦЫ (Ж)</div></div>
-    <div class="row" id="femaleRow"></div>
+  <div class="gender-row">
+    <div class="gender-label">КУРИЦЫ (Ж)</div>
+  </div>
+  <div class="stages-row" id="femaleRow"></div>
 
-    <div class="footer">модели 32x32 на основе точного пиксельного референса</div>
+  <div class="footer">Алгоритмическая отрисовка 64x64 • с анимацией дыхания</div>
 </div>
 
 <script>
-    // ==========================================
-    // 1. ПАЛИТРА (Точно по твоему референсу)
-    // ==========================================
-    // 1: Светлый бежевый (основной), 2: Тень (темный бежевый)
-    // 3: Красный (гребень), 4: Оранжевый (клюв/лапы), 5: Черный (глаз), 6: Контур
-    const PALETTES = {
-        egg: {
-            1: '#f4ecd8', 2: '#d4c4a8', 6: '#b0a080'
-        },
-        chick: {
-            1: '#fce470', 2: '#d0a030', 3: '#e83818', 4: '#f08c20', 5: '#181818', 6: '#604010'
-        },
-        hen: {
-            1: '#f8f0e0', 2: '#c8b8a8', 3: '#e83818', 4: '#f0a010', 5: '#181818', 6: '#685848'
-        },
-        rooster: {
-            1: '#d07840', 2: '#783810', 3: '#e83818', 4: '#f0a010', 5: '#181818', 6: '#187048', 7: '#0c3820'
-        },
-        oldHen: {
-            1: '#d8d0c8', 2: '#988880', 3: '#a02010', 4: '#c09010', 5: '#181818', 6: '#483830'
-        },
-        oldRooster: {
-            1: '#c0b8b0', 2: '#887868', 3: '#a02010', 4: '#c09010', 5: '#181818', 6: '#406850', 7: '#204030'
-        },
-        dyingHen: {
-            1: '#a89888', 2: '#685848', 3: '#601008', 4: '#806010', 5: '#101010', 6: '#281810'
-        },
-        dyingRooster: {
-            1: '#887868', 2: '#483828', 3: '#601008', 4: '#806010', 5: '#101010', 6: '#203828', 7: '#102018'
+  // ==========================================
+  // 1. НАСТРОЙКИ И ПАЛИТРЫ
+  // ==========================================
+  const SIZE = 64; // Используем сетку 64x64 для высокой детализации
+  
+  const COLORS = {
+    egg: { shell: '#f4ecd8', shadow: '#d4c4a8', outline: '#8a7a5a', crack: '#a09070' },
+    chick: { body: '#fce470', shadow: '#e0b830', outline: '#a07020', beak: '#f08c20', eye: '#181818' },
+    hen: { body: '#f8f0e0', shadow: '#d8c8b8', outline: '#786858', comb: '#e83818', beak: '#f0a010', eye: '#181818', leg: '#e08810' },
+    rooster: { body: '#d07840', shadow: '#a05020', outline: '#402010', comb: '#e83818', wattle: '#b81810', beak: '#f0a010', eye: '#181818', tail1: '#187048', tail2: '#30b070', leg: '#e08810' },
+    oldHen: { body: '#d8d0c8', shadow: '#b8a898', outline: '#584840', comb: '#a02010', beak: '#c09010', eye: '#181818', leg: '#b08010' },
+    oldRooster: { body: '#c0b8b0', shadow: '#988880', outline: '#483830', comb: '#a02010', wattle: '#801008', beak: '#c09010', eye: '#181818', tail1: '#406850', tail2: '#608870', leg: '#b08010' },
+    dyingHen: { body: '#a89888', shadow: '#887868', outline: '#382820', comb: '#601008', beak: '#806010', eye: '#101010', leg: '#806010' },
+    dyingRooster: { body: '#887868', shadow: '#685848', outline: '#281810', comb: '#601008', wattle: '#400805', beak: '#806010', eye: '#101010', tail1: '#203828', tail2: '#304838', leg: '#806010' }
+  };
+
+  // ==========================================
+  // 2. АЛГОРИТМИЧЕСКИЕ ПРИМИТИВЫ
+  // ==========================================
+  // Вместо массивов мы рисуем фигуры, которые автоматически закрашивают пиксели.
+  
+  function drawPixel(ctx, x, y, color) {
+    if (!color) return;
+    ctx.fillStyle = color;
+    ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
+  }
+
+  // Рисует эллипс с контуром и заливкой
+  function drawEllipse(ctx, cx, cy, rx, ry, color, outlineColor) {
+    for (let y = -ry; y <= ry; y++) {
+      for (let x = -rx; x <= rx; x++) {
+        const dist = (x * x) / (rx * rx) + (y * y) / (ry * ry);
+        if (dist <= 1.0) {
+          // Если это край эллипса, рисуем контур
+          if (dist > 0.7 && outlineColor) {
+            drawPixel(ctx, cx + x, cy + y, outlineColor);
+          } else {
+            drawPixel(ctx, cx + x, cy + y, color);
+          }
         }
-    };
+      }
+    }
+  }
 
-    // ==========================================
-    // 2. ТОЧНЫЕ ПИКСЕЛЬНЫЕ КАРТЫ (32x32)
-    // ==========================================
+  // Рисует линию (для лапок и клюва)
+  function drawLine(ctx, x0, y0, x1, y1, color) {
+    const dx = Math.abs(x1 - x0);
+    const dy = Math.abs(y1 - y0);
+    const sx = (x0 < x1) ? 1 : -1;
+    const sy = (y0 < y1) ? 1 : -1;
+    let err = dx - dy;
 
-    // ---------- ЯЙЦО ----------
-    const EGG_MAP = [
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000006666666000000000000",
-        "00000000000061111111600000000000",
-        "00000000000611111111116000000000",
-        "00000000006111111111111600000000",
-        "00000000061111111111111160000000",
-        "00000000611111111111111116000000",
-        "00000006111111111111111111600000",
-        "00000006111111111111111111600000",
-        "00000061111111111111111111160000",
-        "00000061111111111111111111160000",
-        "00000061111111111111111111160000",
-        "00000061111111111111111111160000",
-        "00000061111111111111111111260000",
-        "00000061111111111111111122260000",
-        "00000006111111111111112222260000",
-        "00000006111111111111222222600000",
-        "00000000611111111122222226000000",
-        "00000000061111112222222260000000",
-        "00000000006111222222222600000000",
-        "00000000000622222222226000000000",
-        "00000000000066666666660000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000"
-    ];
+    while (true) {
+      drawPixel(ctx, x0, y0, color);
+      if (x0 === x1 && y0 === y1) break;
+      const e2 = 2 * err;
+      if (e2 > -dy) { err -= dy; x0 += sx; }
+      if (e2 < dx) { err += dx; y0 += sy; }
+    }
+  }
 
-    // ---------- ЦЫПЛЁНОК ----------
-    const CHICK_MAP = [
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000066666600000000000",
-        "00000000000066111111660000000000",
-        "00000000000611111111116000000000",
-        "00000000006111111111111600000000",
-        "00000000061111111111111160000000",
-        "00000000611115111111111116000000",
-        "00000000611114111111111116000000",
-        "00000000611111111111111116000000",
-        "00000006111111111111111111600000",
-        "00000006111111111111111111600000",
-        "00000061111111111111111111160000",
-        "00000061111111111111111111160000",
-        "00000061111111111111111111160000",
-        "00000006111111111111111111600000",
-        "00000006111111111111111111600000",
-        "00000000611111111111111116000000",
-        "00000000061111111111111600000000",
-        "00000000006611111111166000000000",
-        "00000000000066666666600000000000",
-        "00000000000006000006000000000000",
-        "00000000000006000006000000000000",
-        "00000000000006000006000000000000",
-        "00000000000066000006600000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000"
-    ];
+  // ==========================================
+  // 3. ГЕНЕРАТОРЫ МОДЕЛЕЙ
+  // ==========================================
+  
+  function generateEgg(ctx) {
+    drawEllipse(ctx, 32, 34, 12, 16, COLORS.egg.shell, COLORS.egg.outline);
+    // Блик
+    drawEllipse(ctx, 28, 28, 3, 5, '#ffffff');
+    // Тень
+    drawEllipse(ctx, 34, 40, 4, 6, COLORS.egg.shadow);
+  }
 
-    // ---------- ПОДРОСТОК (ПЕТУХ) ----------
-    const TEEN_MALE_MAP = [
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000033333000000000000",
-        "00000000000000333333300000000000",
-        "00000000000003333333330000000000",
-        "00000000000003111111300000000000",
-        "00000000000031151111130000000000",
-        "00000000000031141111130000000000",
-        "00000000000031111111130000000000",
-        "00000000000003111111300000000000",
-        "00000000000061111111600000000000",
-        "00000000000611111111116000000000",
-        "00000000006111111111111600000000",
-        "00000000061111111111111160000000",
-        "00000000611111111111111116000000",
-        "00000006111111111111111111600000",
-        "00000061111111111111111111160000",
-        "00000611111111111111111111116000",
-        "00006111111111111111111111111600",
-        "00006111111111111111111111111600",
-        "00006111111111111111111111111600",
-        "00006111111111111111111111111600",
-        "00000611111111111111111111116000",
-        "00000061111111111111111111160000",
-        "00000006111111111111111111600000",
-        "00000000666666666666666666000000",
-        "00000000000006000000600000000000",
-        "00000000000006000000600000000000"
-    ];
+  function generateChick(ctx, isHatched) {
+    const c = COLORS.chick;
+    // Тело
+    drawEllipse(ctx, 32, 36, 14, 14, c.body, c.outline);
+    // Голова
+    drawEllipse(ctx, 32, 22, 10, 10, c.body, c.outline);
+    // Клюв
+    drawPixel(ctx, 21, 22, c.beak);
+    drawPixel(ctx, 20, 22, c.beak);
+    drawPixel(ctx, 21, 23, c.beak);
+    // Глаз
+    drawPixel(ctx, 26, 20, c.eye);
+    drawPixel(ctx, 27, 20, c.eye);
+    // Крылышко (тень)
+    drawEllipse(ctx, 38, 38, 6, 8, c.shadow);
+    
+    // Лапки
+    drawLine(ctx, 26, 50, 26, 55, c.beak);
+    drawLine(ctx, 24, 55, 28, 55, c.beak);
+    
+    drawLine(ctx, 38, 50, 38, 55, c.beak);
+    drawLine(ctx, 36, 55, 40, 55, c.beak);
 
-    // ---------- ПОДРОСТОК (КУРИЦА) ----------
-    const TEEN_FEMALE_MAP = [
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000033333000000000000",
-        "00000000000000333333300000000000",
-        "00000000000003333333330000000000",
-        "00000000000003111111300000000000",
-        "00000000000031151111130000000000",
-        "00000000000031141111130000000000",
-        "00000000000031111111130000000000",
-        "00000000000003111111300000000000",
-        "00000000000061111111600000000000",
-        "00000000000611111111116000000000",
-        "00000000006111111111111600000000",
-        "00000000061111111111111160000000",
-        "00000000611111111111111116000000",
-        "00000006111111111111111111600000",
-        "00000061111111111111111111160000",
-        "00000611111111111111111111116000",
-        "00006111111111111111111111111600",
-        "00006111111111111111111111111600",
-        "00006111111111111111111111111600",
-        "00006111111111111111111111111600",
-        "00000611111111111111111111116000",
-        "00000061111111111111111111160000",
-        "00000006111111111111111111600000",
-        "00000000666666666666666666000000",
-        "00000000000006000000600000000000",
-        "00000000000006000000600000000000"
-    ];
+    if (isHatched) {
+      // Осколки скорлупы на голове
+      drawPixel(ctx, 28, 12, COLORS.egg.shell);
+      drawPixel(ctx, 29, 11, COLORS.egg.outline);
+      drawPixel(ctx, 34, 12, COLORS.egg.shell);
+      drawPixel(ctx, 33, 11, COLORS.egg.outline);
+    }
+  }
 
-    // ---------- ВЗРОСЛЫЙ ПЕТУХ ----------
-    const ADULT_MALE_MAP = [
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000033333300000000000",
-        "00000000000003333333330000000000",
-        "00000000000033333333333000000000",
-        "00000000000033111111330000000000",
-        "00000000000031151111130000000000",
-        "00000000000031141111130000000000",
-        "00000000000031111111130000000000",
-        "00000000000003111111300000000000",
-        "00000000000061111111600000000000",
-        "00000000000611111111116000000000",
-        "00000000006111111111111600000000",
-        "00000000061111111111111160000000",
-        "00000000611111111111111116000000",
-        "00000006111111111111111111600000",
-        "00000061111111111111111111160000",
-        "00000611111111111111111111116000",
-        "00006111111111111111111111111600",
-        "00061111111111111111111111111100",
-        "00611111111111111111111111666660",
-        "00611111111111111111111166777760",
-        "00611111111111111111116677777600",
-        "00061111111111111116667777776000",
-        "00006111111111111166777777600000",
-        "00000611111111116677777766000000",
-        "00000061111111667777776600000000",
-        "00000006111166777777660000000000",
-        "00000000666677777766000000000000",
-        "00000000000066000066000000000000"
-    ];
+  function generateAdult(ctx, type) {
+    // type: 'male', 'female', 'old_male', 'old_female', 'dying_male', 'dying_female'
+    const isMale = type.includes('male');
+    const c = COLORS[type];
 
-    // ---------- ВЗРОСЛАЯ КУРИЦА ----------
-    const ADULT_FEMALE_MAP = [
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000000000000000000000",
-        "00000000000000033333300000000000",
-        "00000000000003333333330000000000",
-        "00000000000033333333333000000000",
-        "00000000000033111111330000000000",
-        "00000000000031151111130000000000",
-        "00000000000031141111130000000000",
-        "00000000000031111111130000000000",
-        "00000000000003111111300000000000",
-        "00000000000061111111600000000000",
-        "00000000000611111111116000000000",
-        "00000000006111111111111600000000",
-        "00000000061111111111111160000000",
-        "00000000611111111111111116000000",
-        "00000006111111111111111111600000",
-        "00000061111111111111111111160000",
-        "00000611111111111111111111116000",
-        "00006111111111111111111111111600",
-        "00061111111111111111111111111100",
-        "00061111111111111111111111111100",
-        "00061111111111111111111111111100",
-        "00061111111111111111111111111100",
-        "00061111111111111111111111111100",
-        "00061111111111111111111111111100",
-        "00006111111111111111111111111600",
-        "00000611111111111111111111116000",
-        "00000066666666666666666666660000",
-        "00000000000066000000066000000000",
-        "00000000000066000000066000000000"
-    ];
-
-    // ==========================================
-    // 3. ФУНКЦИЯ ОТРИСОВКИ
-    // ==========================================
-    function drawSprite(ctx, map, palette) {
-        for (let y = 0; y < map.length; y++) {
-            const row = map[y];
-            for (let x = 0; x < row.length; x++) {
-                const colorIndex = parseInt(row[x]);
-                if (colorIndex !== 0) {
-                    const color = palette[colorIndex];
-                    if (color) {
-                        ctx.fillStyle = color;
-                        ctx.fillRect(x, y, 1, 1);
-                    }
-                }
-            }
-        }
+    if (isMale) {
+      // Хвост петуха (рисуем до тела, чтобы он был сзади)
+      // Градиентный хвост
+      for (let i = 0; i < 15; i++) {
+        const tx = 48 + Math.floor(i * 0.5);
+        const ty = 40 - i;
+        drawPixel(ctx, tx, ty, c.tail1);
+        drawPixel(ctx, tx + 1, ty, c.tail2);
+        drawPixel(ctx, tx - 1, ty + 1, c.tail2);
+        drawPixel(ctx, tx, ty + 1, c.tail1);
+        drawPixel(ctx, tx + 1, ty + 1, c.tail1);
+      }
+      // Тело
+      drawEllipse(ctx, 32, 40, 18, 14, c.body, c.outline);
+      // Шея
+      drawEllipse(ctx, 26, 24, 8, 12, c.body, c.outline);
+      // Голова
+      drawEllipse(ctx, 24, 16, 8, 8, c.body, c.outline);
+      // Гребень (Красный)
+      drawEllipse(ctx, 24, 8, 6, 4, c.comb, c.outline);
+      drawEllipse(ctx, 20, 9, 3, 3, c.comb, c.outline);
+      drawEllipse(ctx, 28, 9, 3, 3, c.comb, c.outline);
+      // Бородка
+      drawEllipse(ctx, 18, 20, 3, 4, c.wattle, c.outline);
+      // Клюв
+      drawPixel(ctx, 15, 16, c.beak);
+      drawPixel(ctx, 14, 16, c.beak);
+      drawPixel(ctx, 15, 17, c.beak);
+      // Глаз
+      drawPixel(ctx, 20, 14, c.eye);
+      drawPixel(ctx, 21, 14, c.eye);
+    } else {
+      // Курица
+      // Тело
+      drawEllipse(ctx, 32, 40, 20, 16, c.body, c.outline);
+      // Шея
+      drawEllipse(ctx, 24, 24, 8, 10, c.body, c.outline);
+      // Голова
+      drawEllipse(ctx, 22, 16, 7, 7, c.body, c.outline);
+      // Гребень
+      drawEllipse(ctx, 22, 8, 5, 4, c.comb, c.outline);
+      drawEllipse(ctx, 18, 9, 3, 3, c.comb, c.outline);
+      drawEllipse(ctx, 26, 9, 3, 3, c.comb, c.outline);
+      // Клюв
+      drawPixel(ctx, 14, 16, c.beak);
+      drawPixel(ctx, 13, 16, c.beak);
+      drawPixel(ctx, 14, 17, c.beak);
+      // Глаз
+      drawPixel(ctx, 18, 14, c.eye);
+      drawPixel(ctx, 19, 14, c.eye);
+      
+      // Хвостик курицы (небольшой)
+      drawEllipse(ctx, 46, 34, 6, 8, c.body, c.outline);
+      drawEllipse(ctx, 48, 30, 4, 6, c.shadow);
     }
 
-    // ==========================================
-    // 4. СОЗДАНИЕ КАРТОЧЕК
-    // ==========================================
-    function createCard(title, map, palette, gender) {
-        const card = document.createElement('div');
-        card.className = `card ${gender}`;
-        
-        const titleDiv = document.createElement('div');
-        titleDiv.className = 'card-title';
-        titleDiv.textContent = title;
-        
-        const canvas = document.createElement('canvas');
-        canvas.width = 32;
-        canvas.height = 32;
-        canvas.style.width = '112px';
-        canvas.style.height = '112px';
-        canvas.style.imageRendering = 'pixelated';
-        
-        const ctx = canvas.getContext('2d');
-        drawSprite(ctx, map, palette);
-        
-        card.appendChild(titleDiv);
-        card.appendChild(canvas);
-        return card;
+    // Лапки (общие для взрослых)
+    // Левая лапка
+    drawLine(ctx, 24, 52, 24, 58, c.leg);
+    drawLine(ctx, 22, 58, 26, 58, c.leg);
+    drawLine(ctx, 24, 58, 24, 60, c.leg);
+    // Правая лапка
+    drawLine(ctx, 40, 52, 40, 58, c.leg);
+    drawLine(ctx, 38, 58, 42, 58, c.leg);
+    drawLine(ctx, 40, 58, 40, 60, c.leg);
+  }
+
+  // ==========================================
+  // 4. РЕНДЕР КАРТОЧЕК
+  // ==========================================
+  
+  function createCard(title, type, gender) {
+    const card = document.createElement('div');
+    card.className = `stage-card ${gender}`;
+    
+    const nameDiv = document.createElement('div');
+    nameDiv.className = 'stage-name';
+    nameDiv.textContent = title;
+    
+    const canvas = document.createElement('canvas');
+    canvas.width = SIZE;
+    canvas.height = SIZE;
+    const ctx = canvas.getContext('2d');
+    
+    // Очищаем и ставим фон
+    ctx.fillStyle = '#0a100a';
+    ctx.fillRect(0, 0, SIZE, SIZE);
+
+    // Отрисовка в зависимости от стадии
+    if (type === 'egg') {
+      generateEgg(ctx);
+    } else if (type === 'chick') {
+      generateChick(ctx, false);
+    } else if (type === 'hatch') {
+      generateChick(ctx, true);
+    } else {
+      generateAdult(ctx, type);
     }
+    
+    card.appendChild(nameDiv);
+    card.appendChild(canvas);
+    
+    // --- АНИМАЦИЯ ДЫХАНИЯ ---
+    // Легкое покачивание (сдвиг на 1 пиксель по Y), чтобы оживить спрайт
+    if (type !== 'egg') {
+      let offset = 0;
+      setInterval(() => {
+        offset = offset === 0 ? 1 : 0;
+        ctx.fillStyle = '#0a100a';
+        ctx.fillRect(0, 0, SIZE, SIZE);
+        
+        ctx.save();
+        ctx.translate(0, offset);
+        
+        if (type === 'chick') generateChick(ctx, false);
+        else if (type === 'hatch') generateChick(ctx, true);
+        else generateAdult(ctx, type);
+        
+        ctx.restore();
+      }, 500);
+    }
+    
+    return card;
+  }
 
-    // ==========================================
-    // 5. ИНИЦИАЛИЗАЦИЯ
-    // ==========================================
-    const maleRow = document.getElementById('maleRow');
-    const femaleRow = document.getElementById('femaleRow');
+  // ==========================================
+  // 5. ИНИЦИАЛИЗАЦИЯ
+  // ==========================================
+  
+  const maleRow = document.getElementById('maleRow');
+  const femaleRow = document.getElementById('femaleRow');
 
-    // Мужской ряд
-    maleRow.appendChild(createCard('ЯЙЦО', EGG_MAP, PALETTES.egg, 'male'));
-    maleRow.appendChild(createCard('ЦЫПЛЁНОК', CHICK_MAP, PALETTES.chick, 'male'));
-    maleRow.appendChild(createCard('ЦЫПЛЁНОК', CHICK_MAP, PALETTES.chick, 'male'));
-    maleRow.appendChild(createCard('ПОДРОСТОК', TEEN_MALE_MAP, PALETTES.rooster, 'male'));
-    maleRow.appendChild(createCard('ВЗРОСЛЫЙ', ADULT_MALE_MAP, PALETTES.rooster, 'male'));
-    maleRow.appendChild(createCard('СТАРЫЙ', ADULT_MALE_MAP, PALETTES.oldRooster, 'male'));
-    maleRow.appendChild(createCard('УМИРАЮЩИЙ', ADULT_MALE_MAP, PALETTES.dyingRooster, 'male'));
+  const maleStages = [
+    { name: 'ЯЙЦО', type: 'egg' },
+    { name: 'ЦЫПЛЁНОК', type: 'chick' },
+    { name: 'ЦЫПЛЁНОК', type: 'hatch' },
+    { name: 'ПОДРОСТОК', type: 'male' },
+    { name: 'ВЗРОСЛЫЙ', type: 'male' },
+    { name: 'СТАРЫЙ', type: 'old_male' },
+    { name: 'УМИРАЮЩИЙ', type: 'dying_male' }
+  ];
 
-    // Женский ряд
-    femaleRow.appendChild(createCard('ЯЙЦО', EGG_MAP, PALETTES.egg, 'female'));
-    femaleRow.appendChild(createCard('ЦЫПЛЁНОК', CHICK_MAP, PALETTES.chick, 'female'));
-    femaleRow.appendChild(createCard('ЦЫПЛЁНОК', CHICK_MAP, PALETTES.chick, 'female'));
-    femaleRow.appendChild(createCard('ПОДРОСТОК', TEEN_FEMALE_MAP, PALETTES.hen, 'female'));
-    femaleRow.appendChild(createCard('ВЗРОСЛАЯ', ADULT_FEMALE_MAP, PALETTES.hen, 'female'));
-    femaleRow.appendChild(createCard('СТАРАЯ', ADULT_FEMALE_MAP, PALETTES.oldHen, 'female'));
-    femaleRow.appendChild(createCard('УМИРАЮЩАЯ', ADULT_FEMALE_MAP, PALETTES.dyingHen, 'female'));
+  const femaleStages = [
+    { name: 'ЯЙЦО', type: 'egg' },
+    { name: 'ЦЫПЛЁНОК', type: 'chick' },
+    { name: 'ЦЫПЛЁНОК', type: 'hatch' },
+    { name: 'ПОДРОСТОК', type: 'female' },
+    { name: 'ВЗРОСЛАЯ', type: 'female' },
+    { name: 'СТАРАЯ', type: 'old_female' },
+    { name: 'УМИРАЮЩАЯ', type: 'dying_female' }
+  ];
+
+  maleRow.innerHTML = '';
+  femaleRow.innerHTML = '';
+
+  maleStages.forEach(stage => {
+    maleRow.appendChild(createCard(stage.name, stage.type, 'male'));
+  });
+
+  femaleStages.forEach(stage => {
+    femaleRow.appendChild(createCard(stage.name, stage.type, 'female'));
+  });
 
 </script>
 </body>
