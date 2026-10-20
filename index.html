@@ -25,6 +25,7 @@
       border-radius: 30px;
       padding: 30px 40px 40px 40px;
       box-shadow: 0 0 0 4px #1e2a1a, 0 20px 30px rgba(0, 0, 0, 0.5);
+      max-width: 1200px;
     }
     h1 {
       color: #f0e8c0;
@@ -71,8 +72,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 120px;
+      width: 130px;
       transition: transform 0.1s;
+    }
+    .stage-card:hover {
+      transform: translateY(-5px);
     }
     .stage-card.male {
       border-color: #5a7a9a;
@@ -84,11 +88,11 @@
       color: #f0e8c0;
       font-size: 13px;
       font-weight: bold;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       text-align: center;
       letter-spacing: 0.5px;
       background: #2a3a1e;
-      padding: 3px 10px;
+      padding: 4px 10px;
       border-radius: 12px;
       width: 100%;
       white-space: nowrap;
@@ -97,12 +101,11 @@
     canvas {
       image-rendering: crisp-edges;
       image-rendering: pixelated;
-      width: 96px;
-      height: 96px;
+      width: 112px;
+      height: 112px;
       display: block;
       background: #1e2a14;
       border-radius: 10px;
-      padding: 4px;
       box-shadow: inset 0 0 0 3px #4a5e3a;
     }
     .footer {
@@ -132,53 +135,37 @@
   </div>
   <div class="stages-row" id="femaleRow"></div>
 
-  <div class="footer">пиксельные модели 16x16 • стадии жизни</div>
+  <div class="footer">пиксельные модели 32x32 • стадии жизни</div>
 </div>
 
 <script>
   (function(){
-    // ========== ОБЩИЕ НАСТРОЙКИ ==========
-    const SIZE = 16;          // логический размер модели 16x16
-    const SCALE = 6;         // масштаб для canvas (96px)
+    const SIZE = 32;          // Новая сетка 32x32
+    const SCALE = 3.5;        // Масштаб для canvas (112px)
 
-    // Палитра цветов (общая)
-    const COLORS = {
-      // яйцо
-      eggShell: '#f0e8c8',
-      eggShade: '#c8b890',
-      eggSpot: '#e0d0a0',
-      eggDark: '#a89060',
-      eggCrack: '#7a5a3a',
-      // цыплёнок / общие
-      chickYellow: '#f8e870',
-      chickLight: '#fff0a0',
-      chickDark: '#e0c040',
-      chickBeak: '#f0a030',
-      chickEye: '#202020',
-      chickWhite: '#ffffff',
-      // взрослые / подростки
-      maleRed: '#c04020',
-      maleRedDark: '#902010',
-      maleComb: '#e84020',
-      maleCombLight: '#f87040',
-      femaleBrown: '#b08050',
-      femaleBrownLight: '#d0a070',
-      femaleBrownDark: '#806030',
-      // старость
-      oldGrey: '#b0a898',
-      oldGreyLight: '#d0c8b8',
-      oldGreyDark: '#807868',
-      // смерть
-      dyingGrey: '#887870',
-      dyingDark: '#584838',
-      dyingLight: '#a89888',
-      // прочее
-      black: '#202020',
-      white: '#f8f8f8',
-      transparent: null
+    // ========== ПАЛИТРА (на основе референсов) ==========
+    const C = {
+      // Яйцо
+      eggBase: '#f4ecd8', eggShade: '#d4c4a8', eggSpot: '#c8b898', eggOutline: '#8a7a5a',
+      // Цыплята
+      chickYellow: '#fce470', chickLight: '#fff4a0', chickDark: '#e0b830', 
+      chickBeak: '#f08c20', chickEye: '#181818',
+      // Петух
+      roosterBody: '#b04818', roosterDark: '#782810', roosterLight: '#d06828',
+      roosterTail: '#186040', roosterTailDark: '#0e4028', roosterTailLight: '#289060',
+      roosterComb: '#d82818', roosterWattle: '#b81810', roosterBeak: '#f8b020',
+      // Курица
+      henBody: '#f0d8b0', henDark: '#c8a880', henLight: '#fff0d0',
+      henComb: '#d02818', henBeak: '#f8b020',
+      // Старость
+      oldBody: '#c8c0b0', oldDark: '#a09888', oldLight: '#e0d8c8',
+      // Смерть
+      dyingBody: '#988878', dyingDark: '#685848', dyingLight: '#b8a898',
+      // Общие
+      black: '#181818', white: '#ffffff', outline: '#241c14', leg: '#382818', legLight: '#584838'
     };
 
-    // ========== ФУНКЦИЯ ОТРИСОВКИ ПИКСЕЛЯ ==========
+    // ========== ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ОТРИСОВКИ ==========
     function drawPixel(ctx, x, y, color) {
       if (color) {
         ctx.fillStyle = color;
@@ -186,358 +173,486 @@
       }
     }
 
-    // ========== МОДЕЛИ (16x16) ==========
-    // Каждая модель — массив строк, где каждая строка — 16 символов.
-    // Символы: 
-    //  ' ' — прозрачный
-    //  'E' — скорлупа яйца
-    //  'e' — тень скорлупы
-    //  's' — пятно на яйце
-    //  'd' — тёмная скорлупа
-    //  'c' — трещина
-    //  'Y' — жёлтый цыплёнок
-    //  'y' — светлый жёлтый
-    //  'w' — тёмно-жёлтый
-    //  'B' — клюв
-    //  'K' — глаз чёрный
-    //  'W' — белый блик
-    //  'R' — красный гребень (петух)
-    //  'r' — тёмно-красный
-    //  'L' — светлый гребень
-    //  'M' — коричневый (курица)
-    //  'm' — светлый коричневый
-    //  'n' — тёмный коричневый
-    //  'G' — серый (старый)
-    //  'g' — светлый серый
-    //  'h' — тёмный серый
-    //  'D' — умирающий тёмный
-    //  'F' — умирающий светлый
-    //  'X' — умирающий средний
+    // ========== МОДЕЛИ 32x32 ==========
+    // Легенда символов:
+    // ' ' - прозрачный, 'O' - контур (outline)
+    // 'E' - скорлупа, 'e' - тень скорлупы, 's' - пятно, 'c' - трещина
+    // 'Y' - цыпленок желтый, 'y' - светлый, 'w' - темный, 'B' - клюв, 'K' - глаз
+    // 'R' - тело петуха, 'r' - темное, 'L' - светлое
+    // 'T' - хвост петуха, 't' - темный хвост, 'l' - светлый хвост
+    // 'C' - гребень петуха, 'W' - бородка петуха
+    // 'M' - тело курицы, 'm' - темное, 'n' - светлое
+    // 'G' - старое тело, 'g' - темное, 'h' - светлое
+    // 'D' - умирающее тело, 'd' - темное, 'f' - светлое
+    // 'P' - клюв (общий), 'K' - глаз (общий)
+    // 'A' - лапка, 'a' - светлая лапка
 
     // ---------- ЯЙЦО ----------
     const EGG = [
-      "                ",
-      "      EEEE      ",
-      "    EEEEEEEE    ",
-      "   EEEEEEEEEE   ",
-      "  EEEsEEEEEEEE  ",
-      "  EEsEEEEEEEEE  ",
-      "  EEEEEEEEdEEE  ",
-      "  EEEEEEEEEEEe  ",
-      "  EEEEEEEEEEEe  ",
-      "  EEEEEEEEEEee  ",
-      "   EEEEEEEEEe   ",
-      "    EEEEEEEe    ",
-      "     EEEEEe     ",
-      "      EEEE      ",
-      "                ",
-      "                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OOEEEEEEOO           ",
+      "          OEEEEEEEEEEO          ",
+      "         OEEEEEEEEEEEEO         ",
+      "        OEEEEsEEEEEEEEEO        ",
+      "        OEEsEEEEEEEEEEEO        ",
+      "       OEEEEEEEEEEEdEEEEO       ",
+      "       OEEEEEEEEEEdEEEEEO       ",
+      "       OEEEEEEEEEEEEEEEEO       ",
+      "       OEEEEEEEEEEEEEEEEO       ",
+      "       OEEEEEEEEEEEEEEeeO       ",
+      "        OEEEEEEEEEEEeeEO        ",
+      "        OEEEEEEEEEEeeEEO        ",
+      "         OEEEEEEEEEEeEO         ",
+      "          OEEEEEEEEeEO          ",
+      "           OOEEEEeeOO           ",
+      "             OOOOOO             ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
-    // ---------- ЦЫПЛЁНОК (только что вылупился) ----------
+    // ---------- ЦЫПЛЁНОК (вылупившийся) ----------
     const CHICK_HATCHED = [
-      "                ",
-      "      YYYY      ",
-      "     YYYYYY     ",
-      "    YYYYYYYY    ",
-      "   YYYKYYKYYY   ",
-      "   YYYBYYBYYY   ",
-      "   YYYYYYYYYY   ",
-      "    YYYYYYYY    ",
-      "     YYYYYY     ",
-      "     YYYYYY     ",
-      "     YYYYYY     ",
-      "    YYYYYYYY    ",
-      "    YYYYYYYY    ",
-      "     YYYYYY     ",
-      "      YYYY      ",
-      "                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OOYYYYYYOO           ",
+      "          OYYYYYYYYYYO          ",
+      "         OYYYYYYYYYYYYO         ",
+      "        OYYKYYYYYYKYYYYO        ",
+      "        OYYKYYYYYYKYYYYO        ",
+      "        OYYYYYYYYYYYYYYO        ",
+      "        OYYYYYBBBBYYYYYO        ",
+      "         OYYYYYYYYYYYYO         ",
+      "          OYYYYYYYYYYO          ",
+      "           OOYYYYYYOO           ",
+      "          OOYYYYYYYYOO          ",
+      "         OYYYYYYYYYYYYO         ",
+      "         OYYYYYYYYYYYYO         ",
+      "          OYYYYYYYYYYO          ",
+      "           OOYYYYYYOO           ",
+      "             OOOOOO             ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
-    // ---------- ОБЫЧНЫЙ ЦЫПЛЁНОК (подросший) ----------
+    // ---------- ЦЫПЛЁНОК (обычный) ----------
     const CHICK_NORMAL = [
-      "                ",
-      "      YYYY      ",
-      "     YYYYYY     ",
-      "    YYYYYYYY    ",
-      "   YYYKYYKYYY   ",
-      "   YYYBYYBYYY   ",
-      "   YYYYYYYYYY   ",
-      "    YYYYYYYY    ",
-      "     YYYYYY     ",
-      "     YYYYYY     ",
-      "    YYYYYYYY    ",
-      "    YYYYYYYY    ",
-      "    YYYYYYYY    ",
-      "     YYYYYY     ",
-      "      YYYY      ",
-      "                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OOYYYYYYOO           ",
+      "          OYYYYYYYYYYO          ",
+      "         OYYYYYYYYYYYYO         ",
+      "        OYYKYYYYYYKYYYYO        ",
+      "        OYYKYYYYYYKYYYYO        ",
+      "        OYYYYYYYYYYYYYYO        ",
+      "        OYYYYYBBBBYYYYYO        ",
+      "         OYYYYYYYYYYYYO         ",
+      "          OYYYYYYYYYYO          ",
+      "           OOYYYYYYOO           ",
+      "          OOYYYYYYYYOO          ",
+      "         OYYYYYYYYYYYYO         ",
+      "         OYYYYYYYYYYYYO         ",
+      "         OYYYYYYYYYYYYO         ",
+      "          OYYYYYYYYYYO          ",
+      "           OOYYYYYYOO           ",
+      "             OOOOOO             ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
-    // ---------- ПОДРОСТОК (петух) ----------
+    // ---------- ПОДРОСТОК (ПЕТУХ) ----------
     const TEEN_MALE = [
-      "                ",
-      "      RRRR      ",
-      "     RRRRRR     ",
-      "    RRRRRRRR    ",
-      "   RRRRKRRKRRR  ",
-      "   RRRRBRRBRRR  ",
-      "   RRRRRRRRRRR  ",
-      "    RRRRRRRR    ",
-      "     RRRRRR     ",
-      "     RRRRRR     ",
-      "     RRRRRR     ",
-      "    RRRRRRRR    ",
-      "    RRRRRRRR    ",
-      "     RRRRRR     ",
-      "      RRRR      ",
-      "                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "              OOOOOO            ",
+      "            OOCCCCCCOO          ",
+      "           OCCCCCCCCCO          ",
+      "           OCCCRRRRCCO          ",
+      "           OCCRRRRRRCO          ",
+      "           OCRRRRRRRCO          ",
+      "           ORRRRRRRRRO          ",
+      "          ORRRRKRRRKRRRO        ",
+      "          ORRRRRPRRRRRRO        ",
+      "          ORRRRRRRRRRRRO        ",
+      "          OWRRRRRRRRRRRO        ",
+      "           ORRRRRRRRRRO         ",
+      "           ORRRRRRRRRRO         ",
+      "           ORRRRRRRRRRO         ",
+      "            ORRRRRRRRO          ",
+      "            ORRRRRRRRO          ",
+      "             ORRRRRRO           ",
+      "             ORRRRRRO           ",
+      "             OORRRROO           ",
+      "              OOOOOO            ",
+      "             OO    OO           ",
+      "            OAA    AAO          ",
+      "            OAA    AAO          ",
+      "           OOOO  OOOO           ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
-    // ---------- ПОДРОСТОК (курица) ----------
+    // ---------- ПОДРОСТОК (КУРИЦА) ----------
     const TEEN_FEMALE = [
-      "                ",
-      "      MMMM      ",
-      "     MMMMMM     ",
-      "    MMMMMMMM    ",
-      "   MMMMKMMKMMM  ",
-      "   MMMMBMMBMMM  ",
-      "   MMMMMMMMMMM  ",
-      "    MMMMMMMM    ",
-      "     MMMMMM     ",
-      "     MMMMMM     ",
-      "     MMMMMM     ",
-      "    MMMMMMMM    ",
-      "    MMMMMMMM    ",
-      "     MMMMMM     ",
-      "      MMMM      ",
-      "                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OOCCCCCCOO           ",
+      "          OCCCCCCCCCO           ",
+      "          OCCMMMMMMCO           ",
+      "          OCMMMMMMMMCO          ",
+      "          OMMMMMMMMMMO          ",
+      "         OMMMMMMMMMMMMO         ",
+      "         OMMMKMMMMKMMMO         ",
+      "         OMMMMPMMMMMMMO         ",
+      "         OMMMMMMMMMMMMO         ",
+      "         OMMMMMMMMMMMMO         ",
+      "          OMMMMMMMMMMO          ",
+      "          OMMMMMMMMMMO          ",
+      "          OMMMMMMMMMMO          ",
+      "           OMMMMMMMMO           ",
+      "           OMMMMMMMMO           ",
+      "            OMMMMMMO            ",
+      "            OMMMMMMO            ",
+      "            OOMMMMOO            ",
+      "             OOOOOO             ",
+      "            OO    OO            ",
+      "           OAA    AAO           ",
+      "           OAA    AAO           ",
+      "          OOOO  OOOO            ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
     // ---------- ВЗРОСЛЫЙ ПЕТУХ ----------
     const ADULT_MALE = [
-      "                ",
-      "      RRRR      ",
-      "     RRRRRR     ",
-      "    RRRRRRRR    ",
-      "   RRRRKRRKRRR  ",
-      "   RRRRBRRBRRR  ",
-      "   RRRRRRRRRRR  ",
-      "    RRRRRRRR    ",
-      "    RRRRRRRR    ",
-      "    RRRRRRRR    ",
-      "    RRRRRRRR    ",
-      "    RRRRRRRR    ",
-      "    RRRRRRRR    ",
-      "    RRRRRRRR    ",
-      "     RRRRRR     ",
-      "      RRRR      "
+      "                                ",
+      "                                ",
+      "                                ",
+      "              OOOOOO            ",
+      "            OOCCCCCCOO          ",
+      "           OCCCCCCCCCO          ",
+      "           OCCCRRRRCCO          ",
+      "           OCCRRRRRRCO          ",
+      "           OCRRRRRRRCO          ",
+      "           ORRRRRRRRRO          ",
+      "          ORRRRKRRRKRRRO        ",
+      "          ORRRRRPRRRRRRO        ",
+      "          ORRRRRRRRRRRRO        ",
+      "          OWRRRRRRRRRRRO        ",
+      "           ORRRRRRRRRRO         ",
+      "           ORRRRRRRRRRO         ",
+      "           ORRRRRRRRRRO         ",
+      "            ORRRRRRRRO          ",
+      "            ORRRRRRRRO          ",
+      "             ORRRRRRO           ",
+      "             ORRRRRRO           ",
+      "             OORRRROO           ",
+      "              OOOOOO            ",
+      "             OO    OO           ",
+      "            OAA    AAO          ",
+      "            OAA    AAO          ",
+      "           OOOO  OOOO           ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
     // ---------- ВЗРОСЛАЯ КУРИЦА ----------
     const ADULT_FEMALE = [
-      "                ",
-      "      MMMM      ",
-      "     MMMMMM     ",
-      "    MMMMMMMM    ",
-      "   MMMMKMMKMMM  ",
-      "   MMMMBMMBMMM  ",
-      "   MMMMMMMMMMM  ",
-      "    MMMMMMMM    ",
-      "    MMMMMMMM    ",
-      "    MMMMMMMM    ",
-      "    MMMMMMMM    ",
-      "    MMMMMMMM    ",
-      "    MMMMMMMM    ",
-      "    MMMMMMMM    ",
-      "     MMMMMM     ",
-      "      MMMM      "
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OOCCCCCCOO           ",
+      "          OCCCCCCCCCO           ",
+      "          OCCMMMMMMCO           ",
+      "          OCMMMMMMMMCO          ",
+      "          OMMMMMMMMMMO          ",
+      "         OMMMMMMMMMMMMO         ",
+      "         OMMMKMMMMKMMMO         ",
+      "         OMMMMPMMMMMMMO         ",
+      "         OMMMMMMMMMMMMO         ",
+      "         OMMMMMMMMMMMMO         ",
+      "          OMMMMMMMMMMO          ",
+      "          OMMMMMMMMMMO          ",
+      "          OMMMMMMMMMMO          ",
+      "           OMMMMMMMMO           ",
+      "           OMMMMMMMMO           ",
+      "            OMMMMMMO            ",
+      "            OMMMMMMO            ",
+      "            OOMMMMOO            ",
+      "             OOOOOO             ",
+      "            OO    OO            ",
+      "           OAA    AAO           ",
+      "           OAA    AAO           ",
+      "          OOOO  OOOO            ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
     // ---------- СТАРЫЙ ПЕТУХ ----------
     const OLD_MALE = [
-      "                ",
-      "      GGGG      ",
-      "     GGGGGG     ",
-      "    GGGGGGGG    ",
-      "   GGGGKGGKGGG  ",
-      "   GGGGBGGBGGG  ",
-      "   GGGGGGGGGGG  ",
-      "    GGGGGGGG    ",
-      "    GGGGGGGG    ",
-      "    GGGGGGGG    ",
-      "    GGGGGGGG    ",
-      "    GGGGGGGG    ",
-      "    GGGGGGGG    ",
-      "    GGGGGGGG    ",
-      "     GGGGGG     ",
-      "      GGGG      "
+      "                                ",
+      "                                ",
+      "                                ",
+      "              OOOOOO            ",
+      "            OOGGGGGGOO          ",
+      "           OGGGGGGGGGO          ",
+      "           OGGGRRRRGGO          ",
+      "           OGGRRRRRRGO          ",
+      "           OGRRRRRRRGO          ",
+      "           ORRRRRRRRRO          ",
+      "          ORRRRKRRRKRRRO        ",
+      "          ORRRRRPRRRRRRO        ",
+      "          ORRRRRRRRRRRRO        ",
+      "          OWRRRRRRRRRRRO        ",
+      "           ORRRRRRRRRRO         ",
+      "           ORRRRRRRRRRO         ",
+      "           ORRRRRRRRRRO         ",
+      "            ORRRRRRRRO          ",
+      "            ORRRRRRRRO          ",
+      "             ORRRRRRO           ",
+      "             ORRRRRRO           ",
+      "             OORRRROO           ",
+      "              OOOOOO            ",
+      "             OO    OO           ",
+      "            OAA    AAO          ",
+      "            OAA    AAO          ",
+      "           OOOO  OOOO           ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
     // ---------- СТАРАЯ КУРИЦА ----------
     const OLD_FEMALE = [
-      "                ",
-      "      GGGG      ",
-      "     GGGGGG     ",
-      "    GGGGGGGG    ",
-      "   GGGGKGGKGGG  ",
-      "   GGGGBGGBGGG  ",
-      "   GGGGGGGGGGG  ",
-      "    GGGGGGGG    ",
-      "    GGGGGGGG    ",
-      "    GGGGGGGG    ",
-      "    GGGGGGGG    ",
-      "    GGGGGGGG    ",
-      "    GGGGGGGG    ",
-      "    GGGGGGGG    ",
-      "     GGGGGG     ",
-      "      GGGG      "
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OOGGGGGGOO           ",
+      "          OGGGGGGGGGO           ",
+      "          OGGMMMMMMGO           ",
+      "          OGMMMMMMMMGO          ",
+      "          OMMMMMMMMMMO          ",
+      "         OMMMMMMMMMMMMO         ",
+      "         OMMMKMMMMKMMMO         ",
+      "         OMMMMPMMMMMMMO         ",
+      "         OMMMMMMMMMMMMO         ",
+      "         OMMMMMMMMMMMMO         ",
+      "          OMMMMMMMMMMO          ",
+      "          OMMMMMMMMMMO          ",
+      "          OMMMMMMMMMMO          ",
+      "           OMMMMMMMMO           ",
+      "           OMMMMMMMMO           ",
+      "            OMMMMMMO            ",
+      "            OMMMMMMO            ",
+      "            OOMMMMOO            ",
+      "             OOOOOO             ",
+      "            OO    OO            ",
+      "           OAA    AAO           ",
+      "           OAA    AAO           ",
+      "          OOOO  OOOO            ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
-    // ---------- УМИРАЮЩИЙ ПЕТУХ (или курица — почти одинаковы, отличаются только гребнем/цветом) ----------
+    // ---------- УМИРАЮЩИЙ ПЕТУХ ----------
     const DYING_MALE = [
-      "                ",
-      "      DDDD      ",
-      "     DDDDDD     ",
-      "    DDDDDDDD    ",
-      "   DDDDKDDKDDD  ",
-      "   DDDDBDDBDDD  ",
-      "   DDDDDDDDDDD  ",
-      "    DDDDDDDD    ",
-      "    DDDDDDDD    ",
-      "    DDDDDDDD    ",
-      "    DDDDDDDD    ",
-      "    DDDDDDDD    ",
-      "    DDDDDDDD    ",
-      "    DDDDDDDD    ",
-      "     DDDDDD     ",
-      "      DDDD      "
+      "                                ",
+      "                                ",
+      "                                ",
+      "              OOOOOO            ",
+      "            OODDDDDDOO          ",
+      "           ODDDDDDDDDO          ",
+      "           ODDDRRRRDDO          ",
+      "           ODDRRRRRRDO          ",
+      "           ODRRRRRRRDO          ",
+      "           ORRRRRRRRRO          ",
+      "          ORRRRKRRRKRRRO        ",
+      "          ORRRRRPRRRRRRO        ",
+      "          ORRRRRRRRRRRRO        ",
+      "          OWRRRRRRRRRRRO        ",
+      "           ORRRRRRRRRRO         ",
+      "           ORRRRRRRRRRO         ",
+      "           ORRRRRRRRRRO         ",
+      "            ORRRRRRRRO          ",
+      "            ORRRRRRRRO          ",
+      "             ORRRRRRO           ",
+      "             ORRRRRRO           ",
+      "             OORRRROO           ",
+      "              OOOOOO            ",
+      "             OO    OO           ",
+      "            OAA    AAO          ",
+      "            OAA    AAO          ",
+      "           OOOO  OOOO           ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
+    // ---------- УМИРАЮЩАЯ КУРИЦА ----------
     const DYING_FEMALE = [
-      "                ",
-      "      DDDD      ",
-      "     DDDDDD     ",
-      "    DDDDDDDD    ",
-      "   DDDDKDDKDDD  ",
-      "   DDDDBDDBDDD  ",
-      "   DDDDDDDDDDD  ",
-      "    DDDDDDDD    ",
-      "    DDDDDDDD    ",
-      "    DDDDDDDD    ",
-      "    DDDDDDDD    ",
-      "    DDDDDDDD    ",
-      "    DDDDDDDD    ",
-      "    DDDDDDDD    ",
-      "     DDDDDD     ",
-      "      DDDD      "
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OODDDDDDOO           ",
+      "          ODDDDDDDDDO           ",
+      "          ODDMMMMMMDO           ",
+      "          ODMMMMMMMMDO          ",
+      "          OMMMMMMMMMMO          ",
+      "         OMMMMMMMMMMMMO         ",
+      "         OMMMKMMMMKMMMO         ",
+      "         OMMMMPMMMMMMMO         ",
+      "         OMMMMMMMMMMMMO         ",
+      "         OMMMMMMMMMMMMO         ",
+      "          OMMMMMMMMMMO          ",
+      "          OMMMMMMMMMMO          ",
+      "          OMMMMMMMMMMO          ",
+      "           OMMMMMMMMO           ",
+      "           OMMMMMMMMO           ",
+      "            OMMMMMMO            ",
+      "            OMMMMMMO            ",
+      "            OOMMMMOO            ",
+      "             OOOOOO             ",
+      "            OO    OO            ",
+      "           OAA    AAO           ",
+      "           OAA    AAO           ",
+      "          OOOO  OOOO            ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
     // ========== МАППИНГ СИМВОЛОВ В ЦВЕТА ==========
-    // Учитываем контекст: для каждой модели свой набор, но используем общий словарь с проверкой.
     function getColorForChar(ch, modelType) {
-      // modelType: 'egg', 'chick', 'teen_m', 'teen_f', 'adult_m', 'adult_f', 'old_m', 'old_f', 'dying_m', 'dying_f'
-      // Но проще использовать общий маппинг, где некоторые символы имеют разные цвета в зависимости от модели? 
-      // Сделаем чуть иначе: для каждого символа возвращаем цвет, но для 'R' и 'M' и 'G' и 'D' используем разные оттенки в зависимости от типа.
-      // Однако для простоты назначим конкретные цвета для каждого символа в рамках модели.
-      // Но чтобы не дублировать, определим цвета для символов с учётом модели через отдельные константы.
+      // Общие символы для всех
+      switch(ch) {
+        case 'O': return C.outline;
+        case 'A': return C.leg;
+        case 'a': return C.legLight;
+        case 'P': return C.roosterBeak; // клюв (оранжевый)
+        case 'K': return C.black;       // глаз
+        case 'W': return C.roosterWattle;
+      }
 
-      // Для яйца
+      // Специфичные для модели
       if (modelType === 'egg') {
         switch(ch) {
-          case 'E': return COLORS.eggShell;
-          case 'e': return COLORS.eggShade;
-          case 's': return COLORS.eggSpot;
-          case 'd': return COLORS.eggDark;
-          case 'c': return COLORS.eggCrack;
+          case 'E': return C.eggBase;
+          case 'e': return C.eggShade;
+          case 's': return C.eggSpot;
           default: return null;
         }
       }
 
-      // Для цыплят (chick_hatched, chick_normal)
       if (modelType === 'chick') {
         switch(ch) {
-          case 'Y': return COLORS.chickYellow;
-          case 'y': return COLORS.chickLight;
-          case 'w': return COLORS.chickDark;
-          case 'B': return COLORS.chickBeak;
-          case 'K': return COLORS.chickEye;
-          case 'W': return COLORS.chickWhite;
+          case 'Y': return C.chickYellow;
+          case 'y': return C.chickLight;
+          case 'w': return C.chickDark;
+          case 'B': return C.chickBeak;
           default: return null;
         }
       }
 
-      // Для подростков и взрослых и старых — используем половые цвета
-      // Определим цветовую схему в зависимости от модели
+      // Для остальных определяем базовые цвета в зависимости от типа
       const isMale = modelType.includes('male') || modelType.includes('_m');
       const isFemale = modelType.includes('female') || modelType.includes('_f');
       const isOld = modelType.includes('old');
       const isDying = modelType.includes('dying');
-      
-      // Базовые цвета
-      let mainColor, lightColor, darkColor, combColor, combLight;
-      
+
+      let body, dark, light, comb;
+
       if (isDying) {
-        mainColor = COLORS.dyingGrey;
-        lightColor = COLORS.dyingLight;
-        darkColor = COLORS.dyingDark;
-        combColor = COLORS.dyingDark;
-        combLight = COLORS.dyingGrey;
+        body = C.dyingBody; dark = C.dyingDark; light = C.dyingLight; comb = C.dyingDark;
       } else if (isOld) {
-        mainColor = COLORS.oldGrey;
-        lightColor = COLORS.oldGreyLight;
-        darkColor = COLORS.oldGreyDark;
-        combColor = COLORS.oldGreyDark;
-        combLight = COLORS.oldGrey;
+        body = C.oldBody; dark = C.oldDark; light = C.oldLight; comb = C.oldDark;
       } else if (isMale) {
-        mainColor = COLORS.maleRed;
-        lightColor = COLORS.maleCombLight;
-        darkColor = COLORS.maleRedDark;
-        combColor = COLORS.maleComb;
-        combLight = COLORS.maleCombLight;
-      } else { // female
-        mainColor = COLORS.femaleBrown;
-        lightColor = COLORS.femaleBrownLight;
-        darkColor = COLORS.femaleBrownDark;
-        combColor = COLORS.femaleBrownDark;
-        combLight = COLORS.femaleBrownLight;
+        body = C.roosterBody; dark = C.roosterDark; light = C.roosterLight; comb = C.roosterComb;
+      } else {
+        body = C.henBody; dark = C.henDark; light = C.henLight; comb = C.henComb;
       }
 
-      // Теперь маппинг символов
       switch(ch) {
-        // Гребень / основная часть (для петуха R, для курицы M и т.д.)
-        case 'R': 
-        case 'M': 
-        case 'G': 
-        case 'D': 
-          return mainColor;
-        case 'r': 
-        case 'm': 
-        case 'g': 
-        case 'F': 
-          return lightColor;
-        case 'n': 
-        case 'h': 
-        case 'X': 
-          return darkColor;
-        // Клюв и глаза — общие
-        case 'B': return COLORS.chickBeak;
-        case 'K': return COLORS.chickEye;
-        case 'W': return COLORS.white;
-        // Специальные для гребня (если есть отдельные символы)
-        case 'L': return combLight;
-        // Для яйца и цыплёнка уже обработано
+        // Тело
+        case 'R': case 'M': case 'G': case 'D': return body;
+        case 'r': case 'm': case 'g': case 'd': return dark;
+        case 'L': case 'n': case 'h': case 'f': return light;
+        // Гребень
+        case 'C': return comb;
+        // Хвост (для петухов)
+        case 'T': return C.roosterTail;
+        case 't': return C.roosterTailDark;
+        case 'l': return C.roosterTailLight;
         default: return null;
       }
     }
 
-    // ========== ОТРИСОВКА МОДЕЛИ НА CANVAS ==========
+    // ========== ОТРИСОВКА МОДЕЛИ ==========
     function renderModel(canvas, model, modelType) {
       const ctx = canvas.getContext('2d');
-      // Очищаем
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Рисуем пиксели
       for (let y = 0; y < SIZE; y++) {
         const row = model[y] || '';
         for (let x = 0; x < SIZE; x++) {
@@ -563,10 +678,10 @@
       const canvas = document.createElement('canvas');
       canvas.width = SIZE * SCALE;
       canvas.height = SIZE * SCALE;
-      // Для чёткости пикселей
+      canvas.style.width = '112px'; // Фиксированный размер для отображения
+      canvas.style.height = '112px';
       canvas.style.imageRendering = 'pixelated';
       
-      // Рендерим
       renderModel(canvas, model, modelType);
       
       card.appendChild(nameDiv);
@@ -578,7 +693,6 @@
     const maleRow = document.getElementById('maleRow');
     const femaleRow = document.getElementById('femaleRow');
 
-    // Мужские стадии
     const maleStages = [
       { name: 'ЯЙЦО', model: EGG, type: 'egg' },
       { name: 'ЦЫПЛЁНОК', model: CHICK_HATCHED, type: 'chick' },
@@ -589,7 +703,6 @@
       { name: 'УМИРАЮЩИЙ', model: DYING_MALE, type: 'dying_m' }
     ];
 
-    // Женские стадии
     const femaleStages = [
       { name: 'ЯЙЦО', model: EGG, type: 'egg' },
       { name: 'ЦЫПЛЁНОК', model: CHICK_HATCHED, type: 'chick' },
@@ -600,7 +713,6 @@
       { name: 'УМИРАЮЩАЯ', model: DYING_FEMALE, type: 'dying_f' }
     ];
 
-    // Очищаем и заполняем
     maleRow.innerHTML = '';
     femaleRow.innerHTML = '';
 
@@ -611,10 +723,6 @@
     femaleStages.forEach(stage => {
       femaleRow.appendChild(createStageCard(stage.name, stage.model, stage.type, 'female'));
     });
-
-    // Дополнительно: можно чуть улучшить отрисовку некоторых моделей, но пока оставим так.
-    // Для наглядности различий между полами у цыплят и яиц — они одинаковые (это нормально).
-    // Подростки, взрослые, старые, умирающие — различаются цветом и гребнем (у петуха R, у курицы M).
 
   })();
 </script>
