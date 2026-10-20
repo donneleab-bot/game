@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Пиксельные курицы — Максимальная проработка</title>
+  <title>Пиксельные курицы — Точная копия</title>
   <style>
     * {
       box-sizing: border-box;
@@ -18,7 +18,6 @@
       font-family: 'Courier New', Courier, monospace;
       margin: 0;
       padding: 20px;
-      overflow-x: hidden;
     }
     .game-container {
       background: #1e2a1e;
@@ -27,11 +26,12 @@
       padding: 30px;
       box-shadow: 0 0 0 4px #0a100a, 0 20px 40px rgba(0, 0, 0, 0.8);
       max-width: 1400px;
+      overflow-x: auto;
     }
     h1 {
       color: #e8e0c0;
       text-align: center;
-      font-size: 26px;
+      font-size: 24px;
       letter-spacing: 2px;
       margin-top: 0;
       margin-bottom: 25px;
@@ -56,23 +56,19 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 15px;
+      gap: 12px;
       margin-bottom: 30px;
     }
     .stage-card {
-      background: #253525;
-      border-radius: 12px;
+      background: #151a15;
+      border-radius: 10px;
       padding: 10px 6px 6px 6px;
-      box-shadow: 0 6px 0 #101a10;
-      border: 2px solid #4a5e4a;
+      box-shadow: 0 4px 0 #0a0f0a;
+      border: 2px solid #3a4e3a;
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 150px;
-      transition: transform 0.1s;
-    }
-    .stage-card:hover {
-      transform: translateY(-4px);
+      width: 140px;
     }
     .stage-card.male { border-color: #4a6a8a; }
     .stage-card.female { border-color: #8a5a6a; }
@@ -82,7 +78,7 @@
       font-weight: bold;
       margin-bottom: 8px;
       text-align: center;
-      background: #152015;
+      background: #0a0f0a;
       padding: 4px 8px;
       border-radius: 6px;
       width: 100%;
@@ -91,12 +87,11 @@
     canvas {
       image-rendering: crisp-edges;
       image-rendering: pixelated;
-      width: 128px;
-      height: 128px;
+      width: 112px;
+      height: 112px;
       display: block;
-      background: #0a100a;
-      border-radius: 8px;
-      box-shadow: inset 0 0 0 2px #2a3a2a;
+      background: #0a0f0a;
+      border-radius: 6px;
     }
     .footer {
       text-align: center;
@@ -110,7 +105,7 @@
 </head>
 <body>
 <div class="game-container">
-  <h1>🐔 ЭВОЛЮЦИЯ КУРИЦ (МАКСИМАЛЬНАЯ ПРОРАБОТКА) 🐔</h1>
+  <h1>🐔 ВЫЖИВАНИЕ КУРИЦ 🐔</h1>
 
   <div class="gender-row">
     <div class="gender-label">ПЕТУХИ (M)</div>
@@ -122,256 +117,303 @@
   </div>
   <div class="stages-row" id="femaleRow"></div>
 
-  <div class="footer">Процедурная генерация 64x64 • Все стадии развития</div>
+  <div class="footer">Пиксельные модели 32x32 • Полная эволюция</div>
 </div>
 
 <script>
   // ==========================================
-  // 1. НАСТРОЙКИ И ПАЛИТРЫ
+  // 1. ПАЛИТРА ЦВЕТОВ (Точно как на скриншоте)
   // ==========================================
-  const SIZE = 64;
-  
-  const COLORS = {
-    egg: { shell: '#f4ecd8', shadow: '#d4c4a8', outline: '#8a7a5a', crack: '#6a5a4a', highlight: '#ffffff' },
-    chick: { body: '#fce470', shadow: '#e0b830', outline: '#a07020', beak: '#f08c20', eye: '#181818', shell: '#f4ecd8' },
-    hen: { body: '#f8f0e0', shadow: '#d8c8b8', outline: '#786858', comb: '#e83818', beak: '#f0a010', eye: '#181818', leg: '#e08810' },
-    rooster: { body: '#d07840', shadow: '#a05020', outline: '#402010', comb: '#e83818', wattle: '#b81810', beak: '#f0a010', eye: '#181818', tail1: '#187048', tail2: '#30b070', leg: '#e08810', spur: '#a06010' },
-    oldHen: { body: '#d8d0c8', shadow: '#b8a898', outline: '#584840', comb: '#a02010', beak: '#c09010', eye: '#181818', leg: '#b08010' },
-    oldRooster: { body: '#c0b8b0', shadow: '#988880', outline: '#483830', comb: '#a02010', wattle: '#801008', beak: '#c09010', eye: '#181818', tail1: '#406850', tail2: '#608870', leg: '#b08010', spur: '#806010' },
-    dyingHen: { body: '#a89888', shadow: '#887868', outline: '#382820', comb: '#601008', beak: '#806010', eye: '#101010', leg: '#806010' },
-    dyingRooster: { body: '#887868', shadow: '#685848', outline: '#281810', comb: '#601008', wattle: '#400805', beak: '#806010', eye: '#101010', tail1: '#203828', tail2: '#304838', leg: '#806010', spur: '#604810' }
+  const C = {
+    // Яйцо
+    egg: { base: '#f4ecd8', shadow: '#d4c4a8', outline: '#8a7a5a', crack: '#6a5a4a' },
+    // Цыплята
+    chick: { base: '#fce470', shadow: '#e0b830', outline: '#a07020', beak: '#f08c20', eye: '#181818' },
+    // Курица
+    hen: { base: '#f8f0e0', shadow: '#d8c8b8', outline: '#786858', comb: '#e83818', beak: '#f0a010', eye: '#181818', leg: '#e08810' },
+    // Петух
+    rooster: { base: '#d07840', shadow: '#a05020', outline: '#402010', comb: '#e83818', wattle: '#b81810', beak: '#f0a010', eye: '#181818', tail1: '#187048', tail2: '#30b070', leg: '#e08810' },
+    // Старость
+    oldHen: { base: '#d8d0c8', shadow: '#b8a898', outline: '#584840', comb: '#a02010', beak: '#c09010', eye: '#181818', leg: '#b08010' },
+    oldRooster: { base: '#c0b8b0', shadow: '#988880', outline: '#483830', comb: '#a02010', wattle: '#801008', beak: '#c09010', eye: '#181818', tail1: '#406850', tail2: '#608870', leg: '#b08010' },
+    // Умирающие
+    dyingHen: { base: '#a89888', shadow: '#887868', outline: '#382820', comb: '#601008', beak: '#806010', eye: '#101010', leg: '#806010' },
+    dyingRooster: { base: '#887868', shadow: '#685848', outline: '#281810', comb: '#601008', wattle: '#400805', beak: '#806010', eye: '#101010', tail1: '#203828', tail2: '#304838', leg: '#806010' }
   };
 
   // ==========================================
-  // 2. БАЗОВЫЕ ПРИМИТИВЫ
+  // 2. ТОЧНЫЕ ПИКСЕЛЬНЫЕ МАТРИЦЫ (32x32)
   // ==========================================
-  function drawPixel(ctx, x, y, color) {
-    if (!color) return;
-    ctx.fillStyle = color;
-    ctx.fillRect(Math.floor(x), Math.floor(y), 1, 1);
-  }
+  // 0 - прозрачный, 1 - основной, 2 - тень, 3 - гребень, 4 - клюв/лапы, 5 - глаз, 6 - контур, 7 - хвост 1, 8 - хвост 2
 
-  function drawEllipse(ctx, cx, cy, rx, ry, color, outlineColor) {
-    for (let y = -ry; y <= ry; y++) {
-      for (let x = -rx; x <= rx; x++) {
-        const dist = (x * x) / (rx * rx) + (y * y) / (ry * ry);
-        if (dist <= 1.0) {
-          if (dist > 0.7 && outlineColor) {
-            drawPixel(ctx, cx + x, cy + y, outlineColor);
-          } else {
-            drawPixel(ctx, cx + x, cy + y, color);
+  const EGG_MAP = [
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000006666666000000000000",
+    "00000000000061111111600000000000",
+    "00000000000611111111116000000000",
+    "00000000006111111111111600000000",
+    "00000000061111111111111160000000",
+    "00000000611111111111111116000000",
+    "00000006111111111111111111600000",
+    "00000061111111111111111111160000",
+    "00000061111111111111111111160000",
+    "00000061111111111111111111160000",
+    "00000061111111111111111111160000",
+    "00000061111111111111111111260000",
+    "00000061111111111111111122260000",
+    "00000006111111111111112222260000",
+    "00000006111111111111222222600000",
+    "00000000611111111122222226000000",
+    "00000000061111112222222260000000",
+    "00000000006111222222222600000000",
+    "00000000000622222222226000000000",
+    "00000000000066666666660000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000"
+  ];
+
+  const CHICK_HATCHED_MAP = [
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000066666600000000000",
+    "00000000000066111111660000000000",
+    "00000000000611111111116000000000",
+    "00000000006111111111111600000000",
+    "00000000061111111111111160000000",
+    "00000000611115111111111116000000",
+    "00000000611114111111111116000000",
+    "00000000611111111111111116000000",
+    "00000006111111111111111111600000",
+    "00000061111111111111111111160000",
+    "00000061111111111111111111160000",
+    "00000061111111111111111111160000",
+    "00000006111111111111111111600000",
+    "00000006111111111111111111600000",
+    "00000000611111111111111116000000",
+    "00000000061111111111111600000000",
+    "00000000006611111111166000000000",
+    "00000000000066666666600000000000",
+    "00000000000006000006000000000000",
+    "00000000000006000006000000000000",
+    "00000000000066000006600000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000"
+  ];
+
+  const CHICK_NORMAL_MAP = [
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000066666600000000000",
+    "00000000000066111111660000000000",
+    "00000000000611111111116000000000",
+    "00000000006111111111111600000000",
+    "00000000061111111111111160000000",
+    "00000000611115111111111116000000",
+    "00000000611114111111111116000000",
+    "00000000611111111111111116000000",
+    "00000006111111111111111111600000",
+    "00000061111111111111111111160000",
+    "00000061111111111111111111160000",
+    "00000061111111111111111111160000",
+    "00000006111111111111111111600000",
+    "00000006111111111111111111600000",
+    "00000000611111111111111116000000",
+    "00000000061111111111111600000000",
+    "00000000006611111111166000000000",
+    "00000000000066666666600000000000",
+    "00000000000006000006000000000000",
+    "00000000000006000006000000000000",
+    "00000000000066000006600000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000"
+  ];
+
+  const TEEN_MALE_MAP = [
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000033333000000000000",
+    "00000000000000333333300000000000",
+    "00000000000003333333330000000000",
+    "00000000000003111111300000000000",
+    "00000000000031151111130000000000",
+    "00000000000031141111130000000000",
+    "00000000000031111111130000000000",
+    "00000000000003111111300000000000",
+    "00000000000061111111600000000000",
+    "00000000000611111111116000000000",
+    "00000000006111111111111600000000",
+    "00000000061111111111111160000000",
+    "00000000611111111111111116000000",
+    "00000006111111111111111111600000",
+    "00000061111111111111111111160000",
+    "00000611111111111111111111116000",
+    "00006111111111111111111111111600",
+    "00006111111111111111111111111600",
+    "00006111111111111111111111111600",
+    "00006111111111111111111111111600",
+    "00000611111111111111111111116000",
+    "00000061111111111111111111160000",
+    "00000006111111111111111111600000",
+    "00000000666666666666666666000000",
+    "00000000000006000000600000000000",
+    "00000000000006000000600000000000",
+    "00000000000066000006600000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000"
+  ];
+
+  const TEEN_FEMALE_MAP = [
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000033333000000000000",
+    "00000000000000333333300000000000",
+    "00000000000003333333330000000000",
+    "00000000000003111111300000000000",
+    "00000000000031151111130000000000",
+    "00000000000031141111130000000000",
+    "00000000000031111111130000000000",
+    "00000000000003111111300000000000",
+    "00000000000061111111600000000000",
+    "00000000000611111111116000000000",
+    "00000000006111111111111600000000",
+    "00000000061111111111111160000000",
+    "00000000611111111111111116000000",
+    "00000006111111111111111111600000",
+    "00000061111111111111111111160000",
+    "00000611111111111111111111116000",
+    "00006111111111111111111111111600",
+    "00006111111111111111111111111600",
+    "00006111111111111111111111111600",
+    "00006111111111111111111111111600",
+    "00000611111111111111111111116000",
+    "00000061111111111111111111160000",
+    "00000006111111111111111111600000",
+    "00000000666666666666666666000000",
+    "00000000000006000000600000000000",
+    "00000000000006000000600000000000",
+    "00000000000066000006600000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000"
+  ];
+
+  const ADULT_MALE_MAP = [
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000033333300000000000",
+    "00000000000003333333330000000000",
+    "00000000000033333333333000000000",
+    "00000000000033111111330000000000",
+    "00000000000031151111130000000000",
+    "00000000000031141111130000000000",
+    "00000000000031111111130000000000",
+    "00000000000003111111300000000000",
+    "00000000000061111111600000000000",
+    "00000000000611111111116000000000",
+    "00000000006111111111111600000000",
+    "00000000061111111111111160000000",
+    "00000000611111111111111116000000",
+    "00000006111111111111111111600000",
+    "00000061111111111111111111160000",
+    "00000611111111111111111111116000",
+    "00006111111111111111111111111600",
+    "00061111111111111111111111111100",
+    "00611111111111111111111111111160",
+    "00611111111111111111111111111660",
+    "00611111111111111111111111166000",
+    "00061111111111111111111111660000",
+    "00006111111111111111111166000000",
+    "00000611111111111111116600000000",
+    "00000061111111111111660000000000",
+    "00000006111111111166000000000000",
+    "00000000611111116600000000000000",
+    "00000000066666660000000000000000",
+    "00000000000006000000600000000000",
+    "00000000000066000006600000000000"
+  ];
+
+  const ADULT_FEMALE_MAP = [
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000033333300000000000",
+    "00000000000003333333330000000000",
+    "00000000000033333333333000000000",
+    "00000000000033111111330000000000",
+    "00000000000031151111130000000000",
+    "00000000000031141111130000000000",
+    "00000000000031111111130000000000",
+    "00000000000003111111300000000000",
+    "00000000000061111111600000000000",
+    "00000000000611111111116000000000",
+    "00000000006111111111111600000000",
+    "00000000061111111111111160000000",
+    "00000000611111111111111116000000",
+    "00000006111111111111111111600000",
+    "00000061111111111111111111160000",
+    "00000611111111111111111111116000",
+    "00006111111111111111111111111600",
+    "00061111111111111111111111111100",
+    "00061111111111111111111111111100",
+    "00061111111111111111111111111100",
+    "00061111111111111111111111111100",
+    "00061111111111111111111111111100",
+    "00006111111111111111111111111600",
+    "00000611111111111111111111116000",
+    "00000066666666666666666666660000",
+    "00000000000066000000066000000000",
+    "00000000000066000000066000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000",
+    "00000000000000000000000000000000"
+  ];
+
+  // ==========================================
+  // 3. ФУНКЦИЯ ОТРИСОВКИ
+  // ==========================================
+  function drawSprite(ctx, map, palette) {
+    for (let y = 0; y < map.length; y++) {
+      const row = map[y];
+      for (let x = 0; x < row.length; x++) {
+        const colorIndex = parseInt(row[x]);
+        if (colorIndex !== 0) {
+          const color = palette[colorIndex];
+          if (color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, 1, 1);
           }
         }
       }
     }
   }
 
-  function drawLine(ctx, x0, y0, x1, y1, color) {
-    const dx = Math.abs(x1 - x0);
-    const dy = Math.abs(y1 - y0);
-    const sx = (x0 < x1) ? 1 : -1;
-    const sy = (y0 < y1) ? 1 : -1;
-    let err = dx - dy;
-
-    while (true) {
-      drawPixel(ctx, x0, y0, color);
-      if (x0 === x1 && y0 === y1) break;
-      const e2 = 2 * err;
-      if (e2 > -dy) { err -= dy; x0 += sx; }
-      if (e2 < dx) { err += dx; y0 += sy; }
-    }
-  }
-
   // ==========================================
-  // 3. ГЕНЕРАТОРЫ МОДЕЛЕЙ (ПО СТАДИЯМ)
+  // 4. СОЗДАНИЕ КАРТОЧЕК
   // ==========================================
-  
-  function generateEgg(ctx) {
-    const c = COLORS.egg;
-    // Основа
-    drawEllipse(ctx, 32, 34, 14, 18, c.shell, c.outline);
-    // Блик
-    drawEllipse(ctx, 26, 24, 4, 6, c.highlight);
-    // Тень
-    drawEllipse(ctx, 36, 42, 6, 8, c.shadow);
-    // Трещины (линии)
-    drawLine(ctx, 32, 18, 30, 26, c.crack);
-    drawLine(ctx, 30, 26, 34, 30, c.crack);
-    drawLine(ctx, 34, 30, 28, 36, c.crack);
-  }
-
-  // stage: 0 - только вылупился, 1 - обычный цыпленок
-  function generateChick(ctx, stage) {
-    const c = COLORS.chick;
-    
-    if (stage === 0) {
-      // Вылупившийся: мокрый, с осколками
-      drawEllipse(ctx, 32, 38, 12, 12, c.body, c.outline); // Тело
-      drawEllipse(ctx, 32, 24, 10, 10, c.body, c.outline); // Голова
-      drawPixel(ctx, 20, 24, c.beak); drawPixel(ctx, 19, 24, c.beak); // Клюв
-      drawPixel(ctx, 27, 22, c.eye); // Глаз
-      // Мокрый пух (тени)
-      drawEllipse(ctx, 32, 42, 8, 6, c.shadow);
-      // Осколки на голове
-      drawPixel(ctx, 28, 12, c.shell); drawPixel(ctx, 29, 13, c.shell);
-      drawPixel(ctx, 35, 13, c.shell); drawPixel(ctx, 36, 14, c.shell);
-      // Лапки
-      drawLine(ctx, 26, 48, 26, 54, c.beak); drawLine(ctx, 24, 54, 28, 54, c.beak);
-      drawLine(ctx, 38, 48, 38, 54, c.beak); drawLine(ctx, 36, 54, 40, 54, c.beak);
-    } else {
-      // Обычный цыпленок: пушистый
-      drawEllipse(ctx, 32, 38, 15, 14, c.body, c.outline); // Тело
-      drawEllipse(ctx, 32, 22, 11, 11, c.body, c.outline); // Голова
-      drawPixel(ctx, 19, 22, c.beak); drawPixel(ctx, 18, 22, c.beak); // Клюв
-      drawPixel(ctx, 26, 20, c.eye); drawPixel(ctx, 27, 20, c.eye); // Глаз
-      // Крылышко
-      drawEllipse(ctx, 40, 40, 6, 8, c.shadow);
-      // Хвостик
-      drawEllipse(ctx, 47, 34, 4, 6, c.body, c.outline);
-      // Лапки
-      drawLine(ctx, 26, 50, 26, 56, c.beak); drawLine(ctx, 24, 56, 28, 56, c.beak);
-      drawLine(ctx, 38, 50, 38, 56, c.beak); drawLine(ctx, 36, 56, 40, 56, c.beak);
-    }
-  }
-
-  // Подросток (общая база, но разный хвост)
-  function generateTeen(ctx, isMale) {
-    const c = isMale ? COLORS.rooster : COLORS.hen;
-    
-    // Тело
-    drawEllipse(ctx, 32, 40, 16, 14, c.body, c.outline);
-    // Шея
-    drawEllipse(ctx, 24, 26, 8, 10, c.body, c.outline);
-    // Голова
-    drawEllipse(ctx, 22, 18, 8, 8, c.body, c.outline);
-    
-    // Гребень (маленький, формирующийся)
-    drawEllipse(ctx, 22, 10, 4, 3, c.comb, c.outline);
-    drawEllipse(ctx, 18, 11, 2, 2, c.comb, c.outline);
-    
-    // Клюв
-    drawPixel(ctx, 13, 18, c.beak); drawPixel(ctx, 12, 18, c.beak);
-    // Глаз
-    drawPixel(ctx, 18, 16, c.eye); drawPixel(ctx, 19, 16, c.eye);
-    
-    if (isMale) {
-      // Формирующийся хвост (длинные перья)
-      drawEllipse(ctx, 46, 32, 6, 10, c.tail1, c.outline);
-      drawEllipse(ctx, 50, 28, 4, 8, c.tail2, c.outline);
-      // Бородка
-      drawEllipse(ctx, 16, 22, 2, 3, c.wattle, c.outline);
-    } else {
-      // Хвостик курицы
-      drawEllipse(ctx, 46, 34, 6, 8, c.body, c.outline);
-      drawEllipse(ctx, 48, 30, 4, 5, c.shadow);
-    }
-
-    // Лапки
-    drawLine(ctx, 24, 52, 24, 58, c.leg); drawLine(ctx, 22, 58, 26, 58, c.leg);
-    drawLine(ctx, 40, 52, 40, 58, c.leg); drawLine(ctx, 38, 58, 42, 58, c.leg);
-  }
-
-  function generateAdult(ctx, type) {
-    const isMale = type.includes('male');
-    const isOld = type.includes('old');
-    const isDying = type.includes('dying');
-    const c = COLORS[type];
-
-    // Сгорбленность для старых и умирающих
-    const yOffset = isDying ? 4 : (isOld ? 2 : 0);
-    const bodyRx = isDying ? 18 : 20;
-    const bodyRy = isDying ? 12 : 16;
-
-    if (isMale) {
-      // --- ХВОСТ ПЕТУХА (пышный, градиентный) ---
-      // Рисуем хвост сзади тела
-      for (let i = 0; i < 20; i++) {
-        const tx = 45 + Math.floor(i * 0.6);
-        const ty = 42 + yOffset - i;
-        drawPixel(ctx, tx, ty, c.tail1);
-        drawPixel(ctx, tx + 1, ty, c.tail2);
-        drawPixel(ctx, tx + 2, ty, c.tail1);
-        drawPixel(ctx, tx, ty + 1, c.tail2);
-        drawPixel(ctx, tx + 1, ty + 1, c.tail1);
-        drawPixel(ctx, tx + 2, ty + 1, c.tail2);
-      }
-      
-      // Тело
-      drawEllipse(ctx, 32, 40 + yOffset, bodyRx, bodyRy, c.body, c.outline);
-      // Шея
-      drawEllipse(ctx, 24, 24 + yOffset, 9, 12, c.body, c.outline);
-      // Голова (опущена у умирающих)
-      drawEllipse(ctx, 22, 16 + yOffset, 9, 9, c.body, c.outline);
-      
-      // Гребень (огромный)
-      drawEllipse(ctx, 22, 6 + yOffset, 7, 4, c.comb, c.outline);
-      drawEllipse(ctx, 17, 8 + yOffset, 4, 3, c.comb, c.outline);
-      drawEllipse(ctx, 27, 8 + yOffset, 4, 3, c.comb, c.outline);
-      
-      // Бородка
-      drawEllipse(ctx, 15, 22 + yOffset, 3, 5, c.wattle, c.outline);
-      
-      // Клюв
-      drawPixel(ctx, 13, 16 + yOffset, c.beak); drawPixel(ctx, 12, 16 + yOffset, c.beak);
-      // Глаз
-      drawPixel(ctx, 18, 14 + yOffset, c.eye); drawPixel(ctx, 19, 14 + yOffset, c.eye);
-      
-      // Крыло (тень на теле)
-      drawEllipse(ctx, 38, 44 + yOffset, 8, 10, c.shadow);
-      
-    } else {
-      // --- КУРИЦА ---
-      // Тело
-      drawEllipse(ctx, 32, 40 + yOffset, bodyRx, bodyRy, c.body, c.outline);
-      // Шея
-      drawEllipse(ctx, 24, 24 + yOffset, 8, 10, c.body, c.outline);
-      // Голова
-      drawEllipse(ctx, 22, 16 + yOffset, 8, 8, c.body, c.outline);
-      
-      // Гребень (аккуратный)
-      drawEllipse(ctx, 22, 8 + yOffset, 5, 4, c.comb, c.outline);
-      drawEllipse(ctx, 18, 9 + yOffset, 3, 3, c.comb, c.outline);
-      
-      // Клюв
-      drawPixel(ctx, 13, 16 + yOffset, c.beak); drawPixel(ctx, 12, 16 + yOffset, c.beak);
-      // Глаз
-      drawPixel(ctx, 18, 14 + yOffset, c.eye); drawPixel(ctx, 19, 14 + yOffset, c.eye);
-      
-      // Хвостик
-      drawEllipse(ctx, 47, 34 + yOffset, 7, 9, c.body, c.outline);
-      drawEllipse(ctx, 49, 30 + yOffset, 5, 6, c.shadow);
-      // Крыло
-      drawEllipse(ctx, 38, 44 + yOffset, 7, 9, c.shadow);
-    }
-
-    // --- ЛАПКИ ---
-    // У старых и умирающих лапки тоньше и слабее
-    const legThickness = (isOld || isDying) ? 0 : 1;
-    
-    // Левая лапка
-    drawLine(ctx, 24, 52 + yOffset, 24, 58 + yOffset, c.leg);
-    if (legThickness) drawLine(ctx, 25, 52 + yOffset, 25, 58 + yOffset, c.leg);
-    drawLine(ctx, 22, 58 + yOffset, 26, 58 + yOffset, c.leg);
-    drawLine(ctx, 24, 58 + yOffset, 24, 60 + yOffset, c.leg);
-    
-    // Правая лапка
-    drawLine(ctx, 40, 52 + yOffset, 40, 58 + yOffset, c.leg);
-    if (legThickness) drawLine(ctx, 41, 52 + yOffset, 41, 58 + yOffset, c.leg);
-    drawLine(ctx, 38, 58 + yOffset, 42, 58 + yOffset, c.leg);
-    drawLine(ctx, 40, 58 + yOffset, 40, 60 + yOffset, c.leg);
-
-    // Шпоры у петуха
-    if (isMale) {
-      drawPixel(ctx, 22, 56 + yOffset, c.spur);
-      drawPixel(ctx, 38, 56 + yOffset, c.spur);
-    }
-  }
-
-  // ==========================================
-  // 4. РЕНДЕР КАРТОЧЕК С АНИМАЦИЕЙ
-  // ==========================================
-  
-  function createCard(title, type, gender) {
+  function createCard(title, map, palette, gender) {
     const card = document.createElement('div');
     card.className = `stage-card ${gender}`;
     
@@ -380,40 +422,14 @@
     nameDiv.textContent = title;
     
     const canvas = document.createElement('canvas');
-    canvas.width = SIZE;
-    canvas.height = SIZE;
+    canvas.width = 32;
+    canvas.height = 32;
+    canvas.style.width = '112px';
+    canvas.style.height = '112px';
+    canvas.style.imageRendering = 'pixelated';
+    
     const ctx = canvas.getContext('2d');
-    
-    // Функция отрисовки конкретного типа
-    const draw = () => {
-      ctx.fillStyle = '#0a100a';
-      ctx.fillRect(0, 0, SIZE, SIZE);
-      
-      if (type === 'egg') generateEgg(ctx);
-      else if (type === 'chick0') generateChick(ctx, 0);
-      else if (type === 'chick1') generateChick(ctx, 1);
-      else if (type === 'teen_m') generateTeen(ctx, true);
-      else if (type === 'teen_f') generateTeen(ctx, false);
-      else generateAdult(ctx, type);
-    };
-
-    // Первичная отрисовка
-    draw();
-    
-    // Анимация (дыхание)
-    if (type !== 'egg') {
-      let offset = 0;
-      setInterval(() => {
-        offset = offset === 0 ? 1 : 0;
-        ctx.fillStyle = '#0a100a';
-        ctx.fillRect(0, 0, SIZE, SIZE);
-        
-        ctx.save();
-        ctx.translate(0, offset);
-        draw();
-        ctx.restore();
-      }, 600);
-    }
+    drawSprite(ctx, map, palette);
     
     card.appendChild(nameDiv);
     card.appendChild(canvas);
@@ -423,40 +439,26 @@
   // ==========================================
   // 5. ИНИЦИАЛИЗАЦИЯ
   // ==========================================
-  
   const maleRow = document.getElementById('maleRow');
   const femaleRow = document.getElementById('femaleRow');
 
-  const maleStages = [
-    { name: 'ЯЙЦО', type: 'egg' },
-    { name: 'ВЫЛУПИЛСЯ', type: 'chick0' },
-    { name: 'ЦЫПЛЁНОК', type: 'chick1' },
-    { name: 'ПОДРОСТОК', type: 'teen_m' },
-    { name: 'ВЗРОСЛЫЙ', type: 'rooster' },
-    { name: 'СТАРЫЙ', type: 'oldRooster' },
-    { name: 'УМИРАЮЩИЙ', type: 'dyingRooster' }
-  ];
+  // Мужской ряд
+  maleRow.appendChild(createCard('ЯЙЦО', EGG_MAP, C.egg, 'male'));
+  maleRow.appendChild(createCard('ВЫЛУПИЛСЯ', CHICK_HATCHED_MAP, C.chick, 'male'));
+  maleRow.appendChild(createCard('ЦЫПЛЁНОК', CHICK_NORMAL_MAP, C.chick, 'male'));
+  maleRow.appendChild(createCard('ПОДРОСТОК', TEEN_MALE_MAP, C.rooster, 'male'));
+  maleRow.appendChild(createCard('ВЗРОСЛЫЙ', ADULT_MALE_MAP, C.rooster, 'male'));
+  maleRow.appendChild(createCard('СТАРЫЙ', ADULT_MALE_MAP, C.oldRooster, 'male'));
+  maleRow.appendChild(createCard('УМИРАЮЩИЙ', TEEN_MALE_MAP, C.dyingRooster, 'male'));
 
-  const femaleStages = [
-    { name: 'ЯЙЦО', type: 'egg' },
-    { name: 'ВЫЛУПИЛСЯ', type: 'chick0' },
-    { name: 'ЦЫПЛЁНОК', type: 'chick1' },
-    { name: 'ПОДРОСТОК', type: 'teen_f' },
-    { name: 'ВЗРОСЛАЯ', type: 'hen' },
-    { name: 'СТАРАЯ', type: 'oldHen' },
-    { name: 'УМИРАЮЩАЯ', type: 'dyingHen' }
-  ];
-
-  maleRow.innerHTML = '';
-  femaleRow.innerHTML = '';
-
-  maleStages.forEach(stage => {
-    maleRow.appendChild(createCard(stage.name, stage.type, 'male'));
-  });
-
-  femaleStages.forEach(stage => {
-    femaleRow.appendChild(createCard(stage.name, stage.type, 'female'));
-  });
+  // Женский ряд
+  femaleRow.appendChild(createCard('ЯЙЦО', EGG_MAP, C.egg, 'female'));
+  femaleRow.appendChild(createCard('ВЫЛУПИЛСЯ', CHICK_HATCHED_MAP, C.chick, 'female'));
+  femaleRow.appendChild(createCard('ЦЫПЛЁНОК', CHICK_NORMAL_MAP, C.chick, 'female'));
+  femaleRow.appendChild(createCard('ПОДРОСТОК', TEEN_FEMALE_MAP, C.hen, 'female'));
+  femaleRow.appendChild(createCard('ВЗРОСЛАЯ', ADULT_FEMALE_MAP, C.hen, 'female'));
+  femaleRow.appendChild(createCard('СТАРАЯ', ADULT_FEMALE_MAP, C.oldHen, 'female'));
+  femaleRow.appendChild(createCard('УМИРАЮЩАЯ', TEEN_FEMALE_MAP, C.dyingHen, 'female'));
 
 </script>
 </body>
