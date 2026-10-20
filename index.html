@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Пиксельные курицы — 64x64 HD</title>
+  <title>Пиксельные курицы — Профиль</title>
   <style>
     * {
       box-sizing: border-box;
@@ -21,18 +21,18 @@
     }
     .game-container {
       background: #2d3e2d;
-      border: 10px solid #5a7a4a;
+      border: 8px solid #5a7a4a;
       border-radius: 30px;
       padding: 30px;
-      box-shadow: 0 0 0 6px #1e2a1a, 0 30px 40px rgba(0, 0, 0, 0.6);
-      max-width: 1400px;
+      box-shadow: 0 0 0 4px #1e2a1a, 0 20px 30px rgba(0, 0, 0, 0.5);
+      max-width: 1300px;
       overflow-x: auto;
     }
     h1 {
       color: #f0e8c0;
       text-align: center;
-      font-size: 32px;
-      letter-spacing: 4px;
+      font-size: 28px;
+      letter-spacing: 3px;
       margin-top: 0;
       margin-bottom: 25px;
       text-shadow: 4px 4px 0 #3a4a2a, 2px 2px 0 #7a9a5a;
@@ -46,54 +46,49 @@
     }
     .gender-label {
       color: #e0d8b0;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: bold;
       text-align: center;
       background: #4a5e3a;
-      padding: 8px 40px;
+      padding: 6px 30px;
       border-radius: 40px;
-      border: 4px solid #7a9a5a;
+      border: 3px solid #7a9a5a;
       letter-spacing: 2px;
-      box-shadow: inset 0 -6px 0 #2a3a1a;
+      box-shadow: inset 0 -4px 0 #2a3a1a;
     }
     .stages-row {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 15px;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
     }
     .stage-card {
       background: #3a4e2e;
       border-radius: 20px;
-      padding: 15px 10px 10px 10px;
-      box-shadow: 0 10px 0 #1e2a14, 0 15px 15px rgba(0, 0, 0, 0.4);
-      border: 4px solid #7a9a5a;
+      padding: 12px 8px 8px 8px;
+      box-shadow: 0 8px 0 #1e2a14, 0 12px 12px rgba(0, 0, 0, 0.3);
+      border: 3px solid #7a9a5a;
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 160px;
-      transition: transform 0.15s, box-shadow 0.15s;
+      width: 140px;
+      transition: transform 0.1s;
     }
     .stage-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 18px 0 #1e2a14, 0 20px 20px rgba(0, 0, 0, 0.5);
+      transform: translateY(-5px);
     }
-    .stage-card.male {
-      border-color: #5a7a9a;
-    }
-    .stage-card.female {
-      border-color: #9a6a7a;
-    }
+    .stage-card.male { border-color: #5a7a9a; }
+    .stage-card.female { border-color: #9a6a7a; }
     .stage-name {
       color: #f0e8c0;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: bold;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       text-align: center;
       letter-spacing: 0.5px;
       background: #2a3a1e;
-      padding: 5px 10px;
+      padding: 4px 10px;
       border-radius: 12px;
       width: 100%;
       white-space: nowrap;
@@ -102,69 +97,67 @@
     canvas {
       image-rendering: crisp-edges;
       image-rendering: pixelated;
-      width: 128px; /* Отображаемый размер */
-      height: 128px;
+      width: 120px;
+      height: 120px;
       display: block;
-      background: #1e2a14;
-      border-radius: 12px;
-      box-shadow: inset 0 0 0 4px #4a5e3a;
+      background: #1e2a14; /* Темный фон, как в игре */
+      border-radius: 10px;
+      box-shadow: inset 0 0 0 3px #4a5e3a;
     }
     .footer {
       text-align: center;
       color: #9ab88a;
-      font-size: 15px;
+      font-size: 14px;
       margin-top: 20px;
-      border-top: 4px solid #4a6e3a;
-      padding-top: 20px;
+      border-top: 3px solid #4a6e3a;
+      padding-top: 16px;
       letter-spacing: 1px;
     }
   </style>
 </head>
 <body>
 <div class="game-container">
-  <h1>🐔 ЭВОЛЮЦИЯ КУРИЦ 🐔</h1>
+  <h1>🐔 ВЫЖИВАНИЕ КУРИЦ 🐔</h1>
 
-  <!-- МУЖСКОЙ РЯД -->
   <div class="gender-row">
     <div class="gender-label">ПЕТУХИ (M)</div>
   </div>
   <div class="stages-row" id="maleRow"></div>
 
-  <!-- ЖЕНСКИЙ РЯД -->
   <div class="gender-row">
     <div class="gender-label">КУРИЦЫ (Ж)</div>
   </div>
   <div class="stages-row" id="femaleRow"></div>
 
-  <div class="footer">высокодетализированные пиксельные модели 64x64</div>
+  <div class="footer">пиксельные модели 32x32 (вид сбоку)</div>
 </div>
 
 <script>
   (function(){
-    const SIZE = 64;          // Новая сетка 64x64 (в 4 раза больше деталей)
-    const DISPLAY_SIZE = 128; // Размер на экране
+    const SIZE = 32;          
+    const DISPLAY_SIZE = 120; 
 
-    // ========== ПАЛИТРА (обогащенная) ==========
+    // ========== ПАЛИТРА (Строго по твоему референсу) ==========
     const C = {
       // Яйцо
-      eggBase: '#fcecd0', eggShade: '#e0c8a0', eggSpot: '#c8a878', eggOutline: '#604830',
+      eggBase: '#f4ecd8', eggShade: '#d4c4a8', eggOutline: '#b0a080', eggSpot: '#e8dcc8',
       // Цыплята
-      chickBase: '#fce060', chickLight: '#fff490', chickDark: '#d0b040', 
-      chickBeak: '#f08020', chickEye: '#101010', chickOutline: '#403010',
-      // Петух
-      roosterBody: '#c05020', roosterDark: '#802810', roosterLight: '#e07030',
-      roosterTail: '#186040', roosterTailDark: '#0c3820', roosterTailLight: '#30a060',
-      roosterComb: '#e02010', roosterWattle: '#b01010', roosterBeak: '#f8b020',
-      // Курица
-      henBase: '#fce0b8', henDark: '#d0b080', henLight: '#fff4d8',
-      henComb: '#e02010', henBeak: '#f8b020',
-      // Старость
-      oldBase: '#c8c0b0', oldDark: '#908070', oldLight: '#e8e0d0',
-      // Смерть
-      dyingBase: '#a09080', dyingDark: '#605040', dyingLight: '#c0b0a0',
-      // Общие
-      outline: '#201810', leg: '#302818', legLight: '#504838',
-      white: '#ffffff', black: '#101010'
+      chickBase: '#fce060', chickLight: '#fff4a0', chickDark: '#e0b030', chickOutline: '#a07020', chickBeak: '#f08020',
+      // Курица (Бежевая/Светло-коричневая)
+      henLight: '#f0e4d8', henBase: '#d8c8b8', henDark: '#b8a898', henOutline: '#786858',
+      henComb: '#e83818', henBeak: '#f0a010', henEye: '#181818',
+      // Петух (Темно-коричневый с зеленым хвостом)
+      roosterBody: '#b05828', roosterLight: '#d07840', roosterDark: '#783810', roosterOutline: '#402010',
+      roosterTail: '#186040', roosterTailLight: '#30a060', roosterTailDark: '#0c3820',
+      roosterComb: '#e03010', roosterBeak: '#f0a010',
+      // Старость (Серый)
+      oldLight: '#e0dcd8', oldBase: '#c0b8b0', oldDark: '#988880', oldOutline: '#584840',
+      oldComb: '#c02818',
+      // Смерть (Тусклый, темный)
+      dyingLight: '#a89888', dyingBase: '#887868', dyingDark: '#685848', dyingOutline: '#382820',
+      dyingComb: '#802010',
+      // Лапки
+      leg: '#e08810', legDark: '#b06008'
     };
 
     // ========== ФУНКЦИЯ ОТРИСОВКИ ==========
@@ -175,807 +168,453 @@
       }
     }
 
-    // ========== МОДЕЛИ 64x64 ==========
+    // ========== МОДЕЛИ (32x32, вид сбоку) ==========
     // Легенда:
-    // ' ' - прозрачный, 'O' - контур
-    // 'E' - скорлупа, 'e' - тень, 's' - пятно
-    // 'Y' - цыпленок, 'y' - светлый, 'w' - темный, 'B' - клюв, 'K' - глаз
-    // 'R' - тело петуха, 'r' - темное, 'L' - светлое
-    // 'T' - хвост петуха, 't' - темный хвост, 'l' - светлый хвост
-    // 'C' - гребень, 'W' - бородка
-    // 'M' - тело курицы, 'm' - темное, 'n' - светлое
-    // 'G' - старое тело, 'g' - темное, 'h' - светлое
-    // 'D' - умирающее тело, 'd' - темное, 'f' - светлое
-    // 'A' - лапка, 'P' - клюв
+    // ' ' - пусто, 'O' - контур (Outline)
+    // '1' - светлый (Light), '2' - основной (Base), '3' - темный (Dark)
+    // 'C' - гребень (Comb), 'E' - глаз (Eye), 'B' - клюв (Beak), 'L' - лапки (Legs)
+    // 'T' - хвост светлый, 't' - хвост темный
 
     // ---------- ЯЙЦО ----------
     const EGG = [
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                             OOOOOO                             ",
-      "                           OOEEEEEEOO                           ",
-      "                         OOEEEEEEEEEEOO                         ",
-      "                        OEEEEEEEEEEEEEEO                        ",
-      "                       OEEEEEEEEEEEEEEEEO                       ",
-      "                      OEEEEEEEEEEEEEEEEEEO                      ",
-      "                      OEEEEEEEEEEEEEEEEEEO                      ",
-      "                     OEEEEEEEEEEEEEEEEEEEEO                     ",
-      "                     OEEEEEEEEEEEEEEEEEEEEO                     ",
-      "                    OEEEEEEEEEEEEEEEEEEEEEEO                    ",
-      "                    OEEEEEEsEEEEEEEEEEEEEEEO                    ",
-      "                    OEEEEEssEEEEEEEEEEEEEEEO                    ",
-      "                    OEEEEEEEEEEEEEEEEEEEEEEO                    ",
-      "                    OEEEEEEEEEEEEEEEEEEEEEEO                    ",
-      "                    OEEEEEEEEEEEEEEEEEeEEEEO                    ",
-      "                    OEEEEEEEEEEEEEEEEeeEEEEO                    ",
-      "                    OEEEEEEEEEEEEEEEEEEEEEEO                    ",
-      "                    OEEEEEEEEEEEEEEEEEEEEEEO                    ",
-      "                     OEEEEEEEEEEEEEEEEEEEEO                     ",
-      "                     OEEEEEEEEEEEEEEEEEEeeO                     ",
-      "                      OEEEEEEEEEEEEEEEEeeO                      ",
-      "                      OEEEEEEEEEEEEEEEEeeO                      ",
-      "                       OEEEEEEEEEEEEEEeeO                       ",
-      "                        OEEEEEEEEEEEEeeO                        ",
-      "                         OOEEEEEEEEEEOO                         ",
-      "                           OOEEEEEEOO                           ",
-      "                             OOOOOO                             ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OO111111OO           ",
+      "          O1111111111O          ",
+      "         O111111111111O         ",
+      "         O111111111111O         ",
+      "        O11111111111111O        ",
+      "        O11111111111111O        ",
+      "        O11111111111122O        ",
+      "        O11111111111222O        ",
+      "        O11111111112222O        ",
+      "        O11111111122222O        ",
+      "         O111111222222O         ",
+      "         O111112222222O         ",
+      "          O1112222222O          ",
+      "           OO222222OO           ",
+      "             OOOOOO             ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
-    // ---------- ЦЫПЛЁНОК (вылупившийся) ----------
+    // ---------- ЦЫПЛЁНОК (Вылупившийся) ----------
     const CHICK_HATCHED = [
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                             OOOOOO                             ",
-      "                           OOYYYYYYOO                           ",
-      "                         OOYYYYYYYYYYOO                         ",
-      "                        OYYYYYYYYYYYYYYO                        ",
-      "                       OYYYYYYYYYYYYYYYYO                       ",
-      "                      OYYKYYYYYYYYYYKYYYYO                      ",
-      "                      OYYKYYYYYYYYYYKYYYYO                      ",
-      "                      OYYYYYYYYYYYYYYYYYYO                      ",
-      "                      OYYYYYYYBBBBYYYYYYYO                      ",
-      "                      OYYYYYYBBBBBBYYYYYYO                      ",
-      "                       OYYYYYYYYYYYYYYYYO                       ",
-      "                       OYYYYYYYYYYYYYYYYO                       ",
-      "                        OYYYYYYYYYYYYYYO                        ",
-      "                        OYYYYYYYYYYYYYYO                        ",
-      "                         OYYYYYYYYYYYYO                         ",
-      "                         OYYYYYYYYYYYYO                         ",
-      "                          OYYYYYYYYYYO                          ",
-      "                          OYYYYYYYYYYO                          ",
-      "                           OOYYYYYYOO                           ",
-      "                             OOOOOO                             ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OO111111OO           ",
+      "          O1111111111O          ",
+      "         O11E111111111O         ",
+      "        O11111111111111O        ",
+      "        O11111111111111O        ",
+      "       O1111111111111111O       ",
+      "       O1111111111111111O       ",
+      "       O1111111111111111O       ",
+      "       O1111111111111111O       ",
+      "        O11111111111111O        ",
+      "        O11111111111111O        ",
+      "         O111111111111O         ",
+      "          O1111111111O          ",
+      "           OO222222OO           ",
+      "             OOOOOO             ",
+      "              O  O              ",
+      "             OO  OO             ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
-    // ---------- ЦЫПЛЁНОК (обычный) ----------
+    // ---------- ЦЫПЛЁНОК (Обычный) ----------
     const CHICK_NORMAL = [
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                             OOOOOO                             ",
-      "                           OOYYYYYYOO                           ",
-      "                         OOYYYYYYYYYYOO                         ",
-      "                        OYYYYYYYYYYYYYYO                        ",
-      "                       OYYYYYYYYYYYYYYYYO                       ",
-      "                      OYYKYYYYYYYYYYKYYYYO                      ",
-      "                      OYYKYYYYYYYYYYKYYYYO                      ",
-      "                      OYYYYYYYYYYYYYYYYYYO                      ",
-      "                      OYYYYYYYBBBBYYYYYYYO                      ",
-      "                      OYYYYYYBBBBBBYYYYYYO                      ",
-      "                       OYYYYYYYYYYYYYYYYO                       ",
-      "                       OYYYYYYYYYYYYYYYYO                       ",
-      "                        OYYYYYYYYYYYYYYO                        ",
-      "                        OYYYYYYYYYYYYYYO                        ",
-      "                         OYYYYYYYYYYYYO                         ",
-      "                         OYYYYYYYYYYYYO                         ",
-      "                          OYYYYYYYYYYO                          ",
-      "                          OYYYYYYYYYYO                          ",
-      "                           OOYYYYYYOO                           ",
-      "                             OOOOOO                             ",
-      "                            OO    OO                            ",
-      "                           OAA    AAO                           ",
-      "                           OAA    AAO                           ",
-      "                          OOOO  OOOO                            ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OO111111OO           ",
+      "          O1111111111O          ",
+      "         O11E111111111O         ",
+      "         O11B111111111O         ",
+      "        O11111111111111O        ",
+      "        O11111111111111O        ",
+      "       O1111111111111111O       ",
+      "       O1111111111111111O       ",
+      "       O1111111111111111O       ",
+      "       O1111111111111111O       ",
+      "        O11111111111111O        ",
+      "        O11111111111111O        ",
+      "         O111111111111O         ",
+      "          O1111111111O          ",
+      "           OO222222OO           ",
+      "             OOOOOO             ",
+      "              O  O              ",
+      "             OO  OO             ",
+      "             O    O             ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
     // ---------- ПОДРОСТОК (ПЕТУХ) ----------
     const TEEN_MALE = [
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                              OOOOOO                            ",
-      "                            OOCCCCCCOO                          ",
-      "                           OCCCCCCCCCO                          ",
-      "                           OCCCRRRRCCO                          ",
-      "                           OCCRRRRRRCO                          ",
-      "                           OCRRRRRRRCO                          ",
-      "                           ORRRRRRRRRO                          ",
-      "                          ORRRRKRRRKRRRO                        ",
-      "                          ORRRRRPRRRRRRO                        ",
-      "                          ORRRRRRRRRRRRO                        ",
-      "                          OWRRRRRRRRRRRO                        ",
-      "                           ORRRRRRRRRRO                         ",
-      "                           ORRRRRRRRRRO                         ",
-      "                           ORRRRRRRRRRO                         ",
-      "                            ORRRRRRRRO                          ",
-      "                            ORRRRRRRRO                          ",
-      "                             ORRRRRRO                           ",
-      "                             ORRRRRRO                           ",
-      "                             OORRRROO                           ",
-      "                              OOOOOO                            ",
-      "                             OO    OO                           ",
-      "                            OAA    AAO                          ",
-      "                            OAA    AAO                          ",
-      "                           OOOO  OOOO                           ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OOCCCCCCCO           ",
+      "          OCCCCCCCCCO           ",
+      "         OCC2222222CO           ",
+      "         OC22E2222222O          ",
+      "         OC22B2222222O          ",
+      "        O2222222222222O         ",
+      "        O22222222222222O        ",
+      "       O222222222222222O        ",
+      "       O22222222222222O         ",
+      "      O22222222222222OO         ",
+      "      O2222222222222OOO         ",
+      "       O222222222222OO          ",
+      "       O222222222222O           ",
+      "        O2222222222O            ",
+      "         O22222222O             ",
+      "          OO2222OO              ",
+      "            OOOO                ",
+      "             O  O               ",
+      "            OO  OO              ",
+      "            O    O              ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
     // ---------- ПОДРОСТОК (КУРИЦА) ----------
     const TEEN_FEMALE = [
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                             OOOOOO                             ",
-      "                           OOCCCCCCOO                           ",
-      "                          OCCCCCCCCCO                           ",
-      "                          OCCMMMMMMCO                           ",
-      "                          OCMMMMMMMMCO                          ",
-      "                          OMMMMMMMMMMO                          ",
-      "                         OMMMMMMMMMMMMO                         ",
-      "                         OMMMKMMMMKMMMO                         ",
-      "                         OMMMMPMMMMMMMO                         ",
-      "                         OMMMMMMMMMMMMO                         ",
-      "                         OMMMMMMMMMMMMO                         ",
-      "                          OMMMMMMMMMMO                          ",
-      "                          OMMMMMMMMMMO                          ",
-      "                          OMMMMMMMMMMO                          ",
-      "                           OMMMMMMMMO                           ",
-      "                           OMMMMMMMMO                           ",
-      "                            OMMMMMMO                            ",
-      "                            OMMMMMMO                            ",
-      "                            OOMMMMOO                            ",
-      "                             OOOOOO                             ",
-      "                            OO    OO                            ",
-      "                           OAA    AAO                           ",
-      "                           OAA    AAO                           ",
-      "                          OOOO  OOOO                            ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OOCCCCCCCO           ",
+      "          OCCCCCCCCCO           ",
+      "         OCC2222222CO           ",
+      "         OC22E2222222O          ",
+      "         OC22B2222222O          ",
+      "        O2222222222222O         ",
+      "        O22222222222222O        ",
+      "       O222222222222222O        ",
+      "       O22222222222222O         ",
+      "      O22222222222222OO         ",
+      "      O2222222222222OOO         ",
+      "       O222222222222OO          ",
+      "       O222222222222O           ",
+      "        O2222222222O            ",
+      "         O22222222O             ",
+      "          OO2222OO              ",
+      "            OOOO                ",
+      "             O  O               ",
+      "            OO  OO              ",
+      "            O    O              ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
     // ---------- ВЗРОСЛЫЙ ПЕТУХ ----------
     const ADULT_MALE = [
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                              OOOOOO                            ",
-      "                            OOCCCCCCOO                          ",
-      "                           OCCCCCCCCCO                          ",
-      "                           OCCCRRRRCCO                          ",
-      "                           OCCRRRRRRCO                          ",
-      "                           OCRRRRRRRCO                          ",
-      "                           ORRRRRRRRRO                          ",
-      "                          ORRRRKRRRKRRRO                        ",
-      "                          ORRRRRPRRRRRRO                        ",
-      "                          ORRRRRRRRRRRRO                        ",
-      "                          OWRRRRRRRRRRRO                        ",
-      "                           ORRRRRRRRRRO                         ",
-      "                           ORRRRRRRRRRO                         ",
-      "                           ORRRRRRRRRRO                         ",
-      "                            ORRRRRRRRO                          ",
-      "                            ORRRRRRRRO                          ",
-      "                             ORRRRRRO                           ",
-      "                             ORRRRRRO                           ",
-      "                             OORRRROO                           ",
-      "                              OOOOOO                            ",
-      "                             OO    OO                           ",
-      "                            OAA    AAO                          ",
-      "                            OAA    AAO                          ",
-      "                           OOOO  OOOO                           ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OOCCCCCCCO           ",
+      "          OCCCCCCCCCO           ",
+      "         OCC2222222CO           ",
+      "         OC22E2222222O          ",
+      "         OC22B2222222O          ",
+      "        O2222222222222O         ",
+      "        O22222222222222O        ",
+      "       O22222222222222TO        ",
+      "       O2222222222222TTTO       ",
+      "      O2222222222222TTtttO      ",
+      "      O222222222222TTttttO      ",
+      "       O2222222222TTttttO       ",
+      "       O222222222TTTtttO        ",
+      "        O2222222TTTtttO         ",
+      "        O222222TTTtttO          ",
+      "         O2222TTTtttO           ",
+      "          OO22TTtttO            ",
+      "            OO2TttO             ",
+      "             OO  OO             ",
+      "            OO  OO              ",
+      "            O    O              ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
     // ---------- ВЗРОСЛАЯ КУРИЦА ----------
     const ADULT_FEMALE = [
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                             OOOOOO                             ",
-      "                           OOCCCCCCOO                           ",
-      "                          OCCCCCCCCCO                           ",
-      "                          OCCMMMMMMCO                           ",
-      "                          OCMMMMMMMMCO                          ",
-      "                          OMMMMMMMMMMO                          ",
-      "                         OMMMMMMMMMMMMO                         ",
-      "                         OMMMKMMMMKMMMO                         ",
-      "                         OMMMMPMMMMMMMO                         ",
-      "                         OMMMMMMMMMMMMO                         ",
-      "                         OMMMMMMMMMMMMO                         ",
-      "                          OMMMMMMMMMMO                          ",
-      "                          OMMMMMMMMMMO                          ",
-      "                          OMMMMMMMMMMO                          ",
-      "                           OMMMMMMMMO                           ",
-      "                           OMMMMMMMMO                           ",
-      "                            OMMMMMMO                            ",
-      "                            OMMMMMMO                            ",
-      "                            OOMMMMOO                            ",
-      "                             OOOOOO                             ",
-      "                            OO    OO                            ",
-      "                           OAA    AAO                           ",
-      "                           OAA    AAO                           ",
-      "                          OOOO  OOOO                            ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OOCCCCCCCO           ",
+      "          OCCCCCCCCCO           ",
+      "         OCC1111111CO           ",
+      "         OC11E1111112O          ",
+      "         OC11B1111112O          ",
+      "        O1111111111112O         ",
+      "        O11111111111112O        ",
+      "       O111111111111112O        ",
+      "       O111111111111112O        ",
+      "      O1111111111111122O        ",
+      "      O1111111111111222O        ",
+      "       O111111111112222O        ",
+      "       O111111111122222O        ",
+      "        O1111111122222O         ",
+      "        O1111111222222O         ",
+      "         O11112222222O          ",
+      "          OO1222222OO           ",
+      "            OO2222OO            ",
+      "             O  O               ",
+      "            OO  OO              ",
+      "            O    O              ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
     // ---------- СТАРЫЙ ПЕТУХ ----------
     const OLD_MALE = [
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                              OOOOOO                            ",
-      "                            OOGGGGGGOO                          ",
-      "                           OGGGGGGGGGO                          ",
-      "                           OGGGRRRRGGO                          ",
-      "                           OGGRRRRRRGO                          ",
-      "                           OGRRRRRRRGO                          ",
-      "                           ORRRRRRRRRO                          ",
-      "                          ORRRRKRRRKRRRO                        ",
-      "                          ORRRRRPRRRRRRO                        ",
-      "                          ORRRRRRRRRRRRO                        ",
-      "                          OWRRRRRRRRRRRO                        ",
-      "                           ORRRRRRRRRRO                         ",
-      "                           ORRRRRRRRRRO                         ",
-      "                           ORRRRRRRRRRO                         ",
-      "                            ORRRRRRRRO                          ",
-      "                            ORRRRRRRRO                          ",
-      "                             ORRRRRRO                           ",
-      "                             ORRRRRRO                           ",
-      "                             OORRRROO                           ",
-      "                              OOOOOO                            ",
-      "                             OO    OO                           ",
-      "                            OAA    AAO                          ",
-      "                            OAA    AAO                          ",
-      "                           OOOO  OOOO                           ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OOCCCCCCCO           ",
+      "          OCCCCCCCCCO           ",
+      "         OCC2222222CO           ",
+      "         OC22E2222222O          ",
+      "         OC22B2222222O          ",
+      "        O2222222222222O         ",
+      "        O22222222222222O        ",
+      "       O22222222222222TO        ",
+      "       O2222222222222TTTO       ",
+      "      O2222222222222TTtttO      ",
+      "      O222222222222TTttttO      ",
+      "       O2222222222TTttttO       ",
+      "       O222222222TTTtttO        ",
+      "        O2222222TTTtttO         ",
+      "        O222222TTTtttO          ",
+      "         O2222TTTtttO           ",
+      "          OO22TTtttO            ",
+      "            OO2TttO             ",
+      "             OO  OO             ",
+      "            OO  OO              ",
+      "            O    O              ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
     // ---------- СТАРАЯ КУРИЦА ----------
     const OLD_FEMALE = [
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                             OOOOOO                             ",
-      "                           OOGGGGGGOO                           ",
-      "                          OGGGGGGGGGO                           ",
-      "                          OGGMMMMMMGO                           ",
-      "                          OGMMMMMMMMGO                          ",
-      "                          OMMMMMMMMMMO                          ",
-      "                         OMMMMMMMMMMMMO                         ",
-      "                         OMMMKMMMMKMMMO                         ",
-      "                         OMMMMPMMMMMMMO                         ",
-      "                         OMMMMMMMMMMMMO                         ",
-      "                         OMMMMMMMMMMMMO                         ",
-      "                          OMMMMMMMMMMO                          ",
-      "                          OMMMMMMMMMMO                          ",
-      "                          OMMMMMMMMMMO                          ",
-      "                           OMMMMMMMMO                           ",
-      "                           OMMMMMMMMO                           ",
-      "                            OMMMMMMO                            ",
-      "                            OMMMMMMO                            ",
-      "                            OOMMMMOO                            ",
-      "                             OOOOOO                             ",
-      "                            OO    OO                            ",
-      "                           OAA    AAO                           ",
-      "                           OAA    AAO                           ",
-      "                          OOOO  OOOO                            ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OOCCCCCCCO           ",
+      "          OCCCCCCCCCO           ",
+      "         OCC1111111CO           ",
+      "         OC11E1111112O          ",
+      "         OC11B1111112O          ",
+      "        O1111111111112O         ",
+      "        O11111111111112O        ",
+      "       O111111111111112O        ",
+      "       O111111111111112O        ",
+      "      O1111111111111122O        ",
+      "      O1111111111111222O        ",
+      "       O111111111112222O        ",
+      "       O111111111122222O        ",
+      "        O1111111122222O         ",
+      "        O1111111222222O         ",
+      "         O11112222222O          ",
+      "          OO1222222OO           ",
+      "            OO2222OO            ",
+      "             O  O               ",
+      "            OO  OO              ",
+      "            O    O              ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
     // ---------- УМИРАЮЩИЙ ПЕТУХ ----------
     const DYING_MALE = [
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                              OOOOOO                            ",
-      "                            OODDDDDDOO                          ",
-      "                           ODDDDDDDDDO                          ",
-      "                           ODDDRRRRDDO                          ",
-      "                           ODDRRRRRRDO                          ",
-      "                           ODRRRRRRRDO                          ",
-      "                           ORRRRRRRRRO                          ",
-      "                          ORRRRKRRRKRRRO                        ",
-      "                          ORRRRRPRRRRRRO                        ",
-      "                          ORRRRRRRRRRRRO                        ",
-      "                          OWRRRRRRRRRRRO                        ",
-      "                           ORRRRRRRRRRO                         ",
-      "                           ORRRRRRRRRRO                         ",
-      "                           ORRRRRRRRRRO                         ",
-      "                            ORRRRRRRRO                          ",
-      "                            ORRRRRRRRO                          ",
-      "                             ORRRRRRO                           ",
-      "                             ORRRRRRO                           ",
-      "                             OORRRROO                           ",
-      "                              OOOOOO                            ",
-      "                             OO    OO                           ",
-      "                            OAA    AAO                          ",
-      "                            OAA    AAO                          ",
-      "                           OOOO  OOOO                           ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OOCCCCCCCO           ",
+      "          OCCCCCCCCCO           ",
+      "         OCC2222222CO           ",
+      "         OC22E2222222O          ",
+      "         OC22B2222222O          ",
+      "        O2222222222222O         ",
+      "        O22222222222222O        ",
+      "       O22222222222222TO        ",
+      "       O2222222222222TTTO       ",
+      "      O2222222222222TTtttO      ",
+      "      O222222222222TTttttO      ",
+      "       O2222222222TTttttO       ",
+      "       O222222222TTTtttO        ",
+      "        O2222222TTTtttO         ",
+      "        O222222TTTtttO          ",
+      "         O2222TTTtttO           ",
+      "          OO22TTtttO            ",
+      "            OO2TttO             ",
+      "             OO  OO             ",
+      "            OO  OO              ",
+      "            O    O              ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
     // ---------- УМИРАЮЩАЯ КУРИЦА ----------
     const DYING_FEMALE = [
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                             OOOOOO                             ",
-      "                           OODDDDDDOO                           ",
-      "                          ODDDDDDDDDO                           ",
-      "                          ODDMMMMMMDO                           ",
-      "                          ODMMMMMMMMDO                          ",
-      "                          OMMMMMMMMMMO                          ",
-      "                         OMMMMMMMMMMMMO                         ",
-      "                         OMMMKMMMMKMMMO                         ",
-      "                         OMMMMPMMMMMMMO                         ",
-      "                         OMMMMMMMMMMMMO                         ",
-      "                         OMMMMMMMMMMMMO                         ",
-      "                          OMMMMMMMMMMO                          ",
-      "                          OMMMMMMMMMMO                          ",
-      "                          OMMMMMMMMMMO                          ",
-      "                           OMMMMMMMMO                           ",
-      "                           OMMMMMMMMO                           ",
-      "                            OMMMMMMO                            ",
-      "                            OMMMMMMO                            ",
-      "                            OOMMMMOO                            ",
-      "                             OOOOOO                             ",
-      "                            OO    OO                            ",
-      "                           OAA    AAO                           ",
-      "                           OAA    AAO                           ",
-      "                          OOOO  OOOO                            ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                ",
-      "                                                                "
+      "                                ",
+      "                                ",
+      "                                ",
+      "             OOOOOO             ",
+      "           OOCCCCCCCO           ",
+      "          OCCCCCCCCCO           ",
+      "         OCC1111111CO           ",
+      "         OC11E1111112O          ",
+      "         OC11B1111112O          ",
+      "        O1111111111112O         ",
+      "        O11111111111112O        ",
+      "       O111111111111112O        ",
+      "       O111111111111112O        ",
+      "      O1111111111111122O        ",
+      "      O1111111111111222O        ",
+      "       O111111111112222O        ",
+      "       O111111111122222O        ",
+      "        O1111111122222O         ",
+      "        O1111111222222O         ",
+      "         O11112222222O          ",
+      "          OO1222222OO           ",
+      "            OO2222OO            ",
+      "             O  O               ",
+      "            OO  OO              ",
+      "            O    O              ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                ",
+      "                                "
     ];
 
     // ========== МАППИНГ ЦВЕТОВ ==========
     function getColorForChar(ch, modelType) {
       switch(ch) {
-        case 'O': return C.outline;
-        case 'A': return C.leg;
-        case 'P': return C.roosterBeak;
-        case 'K': return C.black;
-        case 'W': return C.roosterWattle;
-      }
-
-      if (modelType === 'egg') {
-        switch(ch) {
-          case 'E': return C.eggBase;
-          case 'e': return C.eggShade;
-          case 's': return C.eggSpot;
-          default: return null;
-        }
-      }
-
-      if (modelType === 'chick') {
-        switch(ch) {
-          case 'Y': return C.chickBase;
-          case 'y': return C.chickLight;
-          case 'w': return C.chickDark;
-          case 'B': return C.chickBeak;
-          default: return null;
-        }
-      }
-
-      const isMale = modelType.includes('male') || modelType.includes('_m');
-      const isFemale = modelType.includes('female') || modelType.includes('_f');
-      const isOld = modelType.includes('old');
-      const isDying = modelType.includes('dying');
-
-      let body, dark, light, comb;
-
-      if (isDying) {
-        body = C.dyingBase; dark = C.dyingDark; light = C.dyingLight; comb = C.dyingDark;
-      } else if (isOld) {
-        body = C.oldBase; dark = C.oldDark; light = C.oldLight; comb = C.oldDark;
-      } else if (isMale) {
-        body = C.roosterBody; dark = C.roosterDark; light = C.roosterLight; comb = C.roosterComb;
-      } else {
-        body = C.henBase; dark = C.henDark; light = C.henLight; comb = C.henComb;
-      }
-
-      switch(ch) {
-        case 'R': case 'M': case 'G': case 'D': return body;
-        case 'r': case 'm': case 'g': case 'd': return dark;
-        case 'L': case 'n': case 'h': case 'f': return light;
-        case 'C': return comb;
-        case 'T': return C.roosterTail;
+        case 'O': 
+          if (modelType === 'egg') return C.eggOutline;
+          if (modelType === 'chick') return C.chickOutline;
+          if (modelType.includes('dying')) return C.dyingOutline;
+          if (modelType.includes('old')) return C.oldOutline;
+          if (modelType.includes('male')) return C.roosterOutline;
+          return C.henOutline;
+        case '1': 
+          if (modelType === 'egg') return C.eggBase;
+          if (modelType === 'chick') return C.chickLight;
+          if (modelType.includes('dying')) return C.dyingLight;
+          if (modelType.includes('old')) return C.oldLight;
+          if (modelType.includes('male')) return C.roosterLight;
+          return C.henLight;
+        case '2': 
+          if (modelType === 'egg') return C.eggShade;
+          if (modelType === 'chick') return C.chickBase;
+          if (modelType.includes('dying')) return C.dyingBase;
+          if (modelType.includes('old')) return C.oldBase;
+          if (modelType.includes('male')) return C.roosterBody;
+          return C.henBase;
+        case '3': 
+          if (modelType === 'egg') return C.eggShade;
+          if (modelType === 'chick') return C.chickDark;
+          if (modelType.includes('dying')) return C.dyingDark;
+          if (modelType.includes('old')) return C.oldDark;
+          if (modelType.includes('male')) return C.roosterDark;
+          return C.henDark;
+        case 'T': return C.roosterTailLight;
         case 't': return C.roosterTailDark;
-        case 'l': return C.roosterTailLight;
+        case 'C': 
+          if (modelType.includes('dying')) return C.dyingComb;
+          if (modelType.includes('old')) return C.oldComb;
+          if (modelType.includes('male')) return C.roosterComb;
+          return C.henComb;
+        case 'E': return C.henEye;
+        case 'B': 
+          if (modelType === 'chick') return C.chickBeak;
+          if (modelType.includes('male')) return C.roosterBeak;
+          return C.henBeak;
+        case 'L': return C.leg;
         default: return null;
       }
     }
@@ -985,7 +624,7 @@
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Заполняем фон
+      // Темный фон для контраста (как в игре)
       ctx.fillStyle = '#1e2a14';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
