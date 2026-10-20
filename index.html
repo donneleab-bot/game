@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Пиксельные курицы — Профиль</title>
+  <title>Пиксельные курицы — Детальный профиль</title>
   <style>
     * {
       box-sizing: border-box;
       user-select: none;
     }
     body {
-      background: #1a2a1f;
+      background: #121a14;
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -20,41 +20,37 @@
       padding: 20px;
     }
     .game-container {
-      background: #2d3e2d;
-      border: 8px solid #5a7a4a;
-      border-radius: 30px;
+      background: #1e2a1e;
+      border: 6px solid #3a4e3a;
+      border-radius: 20px;
       padding: 30px;
-      box-shadow: 0 0 0 4px #1e2a1a, 0 20px 30px rgba(0, 0, 0, 0.5);
-      max-width: 1300px;
+      box-shadow: 0 0 0 4px #0a100a, 0 20px 40px rgba(0, 0, 0, 0.8);
+      max-width: 1400px;
       overflow-x: auto;
     }
     h1 {
-      color: #f0e8c0;
+      color: #e8e0c0;
       text-align: center;
-      font-size: 28px;
-      letter-spacing: 3px;
+      font-size: 26px;
+      letter-spacing: 2px;
       margin-top: 0;
       margin-bottom: 25px;
-      text-shadow: 4px 4px 0 #3a4a2a, 2px 2px 0 #7a9a5a;
-      font-weight: 800;
+      text-shadow: 3px 3px 0 #1a2a1a;
     }
     .gender-row {
       display: flex;
       justify-content: center;
-      gap: 20px;
       margin-bottom: 15px;
     }
     .gender-label {
-      color: #e0d8b0;
-      font-size: 20px;
+      color: #c8d0b8;
+      font-size: 16px;
       font-weight: bold;
-      text-align: center;
-      background: #4a5e3a;
+      background: #2a3a2a;
       padding: 6px 30px;
-      border-radius: 40px;
-      border: 3px solid #7a9a5a;
-      letter-spacing: 2px;
-      box-shadow: inset 0 -4px 0 #2a3a1a;
+      border-radius: 20px;
+      border: 2px solid #4a5e4a;
+      letter-spacing: 1px;
     }
     .stages-row {
       display: flex;
@@ -64,54 +60,51 @@
       margin-bottom: 30px;
     }
     .stage-card {
-      background: #3a4e2e;
-      border-radius: 20px;
-      padding: 12px 8px 8px 8px;
-      box-shadow: 0 8px 0 #1e2a14, 0 12px 12px rgba(0, 0, 0, 0.3);
-      border: 3px solid #7a9a5a;
+      background: #253525;
+      border-radius: 12px;
+      padding: 10px 6px 6px 6px;
+      box-shadow: 0 6px 0 #101a10;
+      border: 2px solid #4a5e4a;
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 140px;
+      width: 150px;
       transition: transform 0.1s;
     }
     .stage-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-4px);
     }
-    .stage-card.male { border-color: #5a7a9a; }
-    .stage-card.female { border-color: #9a6a7a; }
+    .stage-card.male { border-color: #4a6a8a; }
+    .stage-card.female { border-color: #8a5a6a; }
     .stage-name {
-      color: #f0e8c0;
-      font-size: 13px;
+      color: #b8c8a8;
+      font-size: 12px;
       font-weight: bold;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       text-align: center;
-      letter-spacing: 0.5px;
-      background: #2a3a1e;
-      padding: 4px 10px;
-      border-radius: 12px;
+      background: #152015;
+      padding: 4px 8px;
+      border-radius: 6px;
       width: 100%;
       white-space: nowrap;
-      box-shadow: inset 0 2px 0 #5a7a4a;
     }
     canvas {
       image-rendering: crisp-edges;
       image-rendering: pixelated;
-      width: 120px;
-      height: 120px;
+      width: 132px;
+      height: 132px;
       display: block;
-      background: #1e2a14; /* Темный фон, как в игре */
-      border-radius: 10px;
-      box-shadow: inset 0 0 0 3px #4a5e3a;
+      background: #0a100a;
+      border-radius: 8px;
+      box-shadow: inset 0 0 0 2px #2a3a2a;
     }
     .footer {
       text-align: center;
-      color: #9ab88a;
-      font-size: 14px;
+      color: #5a7a5a;
+      font-size: 13px;
       margin-top: 20px;
-      border-top: 3px solid #4a6e3a;
-      padding-top: 16px;
-      letter-spacing: 1px;
+      border-top: 2px solid #2a3a2a;
+      padding-top: 15px;
     }
   </style>
 </head>
@@ -129,38 +122,36 @@
   </div>
   <div class="stages-row" id="femaleRow"></div>
 
-  <div class="footer">пиксельные модели 32x32 (вид сбоку)</div>
+  <div class="footer">высокодетализированные пиксельные модели 64x64 (вид сбоку)</div>
 </div>
 
 <script>
   (function(){
-    const SIZE = 32;          
-    const DISPLAY_SIZE = 120; 
+    const SIZE = 64;          
+    const DISPLAY_SIZE = 132; 
 
-    // ========== ПАЛИТРА (Строго по твоему референсу) ==========
+    // ========== ПАЛИТРА ==========
     const C = {
       // Яйцо
-      eggBase: '#f4ecd8', eggShade: '#d4c4a8', eggOutline: '#b0a080', eggSpot: '#e8dcc8',
+      eggBase: '#f4ecd8', eggShade: '#d4c4a8', eggOutline: '#8a7a5a',
       // Цыплята
-      chickBase: '#fce060', chickLight: '#fff4a0', chickDark: '#e0b030', chickOutline: '#a07020', chickBeak: '#f08020',
-      // Курица (Бежевая/Светло-коричневая)
-      henLight: '#f0e4d8', henBase: '#d8c8b8', henDark: '#b8a898', henOutline: '#786858',
-      henComb: '#e83818', henBeak: '#f0a010', henEye: '#181818',
-      // Петух (Темно-коричневый с зеленым хвостом)
-      roosterBody: '#b05828', roosterLight: '#d07840', roosterDark: '#783810', roosterOutline: '#402010',
-      roosterTail: '#186040', roosterTailLight: '#30a060', roosterTailDark: '#0c3820',
-      roosterComb: '#e03010', roosterBeak: '#f0a010',
-      // Старость (Серый)
-      oldLight: '#e0dcd8', oldBase: '#c0b8b0', oldDark: '#988880', oldOutline: '#584840',
-      oldComb: '#c02818',
-      // Смерть (Тусклый, темный)
-      dyingLight: '#a89888', dyingBase: '#887868', dyingDark: '#685848', dyingOutline: '#382820',
-      dyingComb: '#802010',
-      // Лапки
-      leg: '#e08810', legDark: '#b06008'
+      chickBase: '#fce470', chickLight: '#fff4a0', chickDark: '#d0a030', chickOutline: '#604010', chickBeak: '#f08c20', chickEye: '#181818',
+      // Петух (Темно-коричневый, зеленый хвост)
+      roosterBody: '#b05828', roosterLight: '#d07840', roosterDark: '#783810', roosterOutline: '#301808',
+      roosterTail: '#187048', roosterTailLight: '#30b070', roosterTailDark: '#0c3820',
+      roosterComb: '#e83818', roosterWattle: '#c02010', roosterBeak: '#f0a010',
+      // Курица (Бежевая, светлая)
+      henBody: '#e8d8c8', henLight: '#f8f0e0', henDark: '#c8b8a8', henOutline: '#685848',
+      henComb: '#e83818', henBeak: '#f0a010',
+      // Старость
+      oldBody: '#c0b8b0', oldLight: '#d8d0c8', oldDark: '#988880', oldOutline: '#483830',
+      // Смерть
+      dyingBody: '#887868', dyingLight: '#a89888', dyingDark: '#584838', dyingOutline: '#281810',
+      // Общие
+      eye: '#181818', leg: '#e08810', legDark: '#b06008'
     };
 
-    // ========== ФУНКЦИЯ ОТРИСОВКИ ==========
+    // ========== ОТРИСОВКА ==========
     function drawPixel(ctx, x, y, color) {
       if (color) {
         ctx.fillStyle = color;
@@ -168,407 +159,741 @@
       }
     }
 
-    // ========== МОДЕЛИ (32x32, вид сбоку) ==========
-    // Легенда:
-    // ' ' - пусто, 'O' - контур (Outline)
-    // '1' - светлый (Light), '2' - основной (Base), '3' - темный (Dark)
-    // 'C' - гребень (Comb), 'E' - глаз (Eye), 'B' - клюв (Beak), 'L' - лапки (Legs)
-    // 'T' - хвост светлый, 't' - хвост темный
+    // ========== МОДЕЛИ 64x64 ==========
+    // O - контур, 1 - светлый, 2 - основной, 3 - темный
+    // C - гребень, W - бородка, E - глаз, B - клюв, L - лапка, D - темная лапка
+    // T - хвост светлый, t - хвост темный, U - хвост основной
 
     // ---------- ЯЙЦО ----------
     const EGG = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OO111111OO           ",
-      "          O1111111111O          ",
-      "         O111111111111O         ",
-      "         O111111111111O         ",
-      "        O11111111111111O        ",
-      "        O11111111111111O        ",
-      "        O11111111111122O        ",
-      "        O11111111111222O        ",
-      "        O11111111112222O        ",
-      "        O11111111122222O        ",
-      "         O111111222222O         ",
-      "         O111112222222O         ",
-      "          O1112222222O          ",
-      "           OO222222OO           ",
-      "             OOOOOO             ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                             OOOOOOOO                           ",
+      "                           OO11111111OO                         ",
+      "                          O111111111111O                        ",
+      "                         O11111111111111O                       ",
+      "                        O1111111111111111O                      ",
+      "                        O1111111111111111O                      ",
+      "                       O111111111111111111O                     ",
+      "                       O111111111111111111O                     ",
+      "                       O111111111111111111O                     ",
+      "                       O111111111111111111O                     ",
+      "                       O111111111111111111O                     ",
+      "                       O111111111111111122O                     ",
+      "                       O111111111111111222O                     ",
+      "                        O1111111111111222O                      ",
+      "                        O1111111111112222O                      ",
+      "                         O11111111112222O                       ",
+      "                          O111111112222O                        ",
+      "                           OO22222222OO                         ",
+      "                             OOOOOOOO                           ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
-    // ---------- ЦЫПЛЁНОК (Вылупившийся) ----------
+    // ---------- ЦЫПЛЁНОК (вылупившийся) ----------
     const CHICK_HATCHED = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OO111111OO           ",
-      "          O1111111111O          ",
-      "         O11E111111111O         ",
-      "        O11111111111111O        ",
-      "        O11111111111111O        ",
-      "       O1111111111111111O       ",
-      "       O1111111111111111O       ",
-      "       O1111111111111111O       ",
-      "       O1111111111111111O       ",
-      "        O11111111111111O        ",
-      "        O11111111111111O        ",
-      "         O111111111111O         ",
-      "          O1111111111O          ",
-      "           OO222222OO           ",
-      "             OOOOOO             ",
-      "              O  O              ",
-      "             OO  OO             ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                              OOOOOO                            ",
+      "                            OO111111OO                          ",
+      "                           O1111111111O                         ",
+      "                          O111111111111O                        ",
+      "                         O11111111111111O                       ",
+      "                         O1111E111111111O                       ",
+      "                        O11111B1111111111O                      ",
+      "                        O1111111111111111O                      ",
+      "                        O1111111111111111O                      ",
+      "                       O111111111111111111O                     ",
+      "                       O111111111111111111O                     ",
+      "                       O111111111111111111O                     ",
+      "                       O111111111111111111O                     ",
+      "                        O1111111111111111O                      ",
+      "                        O1111111111111111O                      ",
+      "                         O11111111111111O                       ",
+      "                         O11111111111111O                       ",
+      "                          O111111111111O                        ",
+      "                           OO22222222OO                         ",
+      "                             OOOOOOOO                           ",
+      "                              O    O                            ",
+      "                             OO    OO                           ",
+      "                             O      O                           ",
+      "                            OO      OO                          ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
-    // ---------- ЦЫПЛЁНОК (Обычный) ----------
+    // ---------- ЦЫПЛЁНОК (обычный) ----------
     const CHICK_NORMAL = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OO111111OO           ",
-      "          O1111111111O          ",
-      "         O11E111111111O         ",
-      "         O11B111111111O         ",
-      "        O11111111111111O        ",
-      "        O11111111111111O        ",
-      "       O1111111111111111O       ",
-      "       O1111111111111111O       ",
-      "       O1111111111111111O       ",
-      "       O1111111111111111O       ",
-      "        O11111111111111O        ",
-      "        O11111111111111O        ",
-      "         O111111111111O         ",
-      "          O1111111111O          ",
-      "           OO222222OO           ",
-      "             OOOOOO             ",
-      "              O  O              ",
-      "             OO  OO             ",
-      "             O    O             ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                              OOOOOO                            ",
+      "                            OO111111OO                          ",
+      "                           O1111111111O                         ",
+      "                          O111111111111O                        ",
+      "                         O11111111111111O                       ",
+      "                         O1111E111111111O                       ",
+      "                        O11111B1111111111O                      ",
+      "                        O1111111111111111O                      ",
+      "                        O1111111111111111O                      ",
+      "                       O111111111111111111O                     ",
+      "                       O111111111111111111O                     ",
+      "                       O111111111111111111O                     ",
+      "                       O111111111111111111O                     ",
+      "                        O1111111111111111O                      ",
+      "                        O1111111111111111O                      ",
+      "                         O11111111111111O                       ",
+      "                         O11111111111111O                       ",
+      "                          O111111111111O                        ",
+      "                           OO22222222OO                         ",
+      "                             OOOOOOOO                           ",
+      "                              O    O                            ",
+      "                             OO    OO                           ",
+      "                             O      O                           ",
+      "                            OO      OO                          ",
+      "                            O        O                          ",
+      "                           OO        OO                         ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- ПОДРОСТОК (ПЕТУХ) ----------
     const TEEN_MALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OOCCCCCCCO           ",
-      "          OCCCCCCCCCO           ",
-      "         OCC2222222CO           ",
-      "         OC22E2222222O          ",
-      "         OC22B2222222O          ",
-      "        O2222222222222O         ",
-      "        O22222222222222O        ",
-      "       O222222222222222O        ",
-      "       O22222222222222O         ",
-      "      O22222222222222OO         ",
-      "      O2222222222222OOO         ",
-      "       O222222222222OO          ",
-      "       O222222222222O           ",
-      "        O2222222222O            ",
-      "         O22222222O             ",
-      "          OO2222OO              ",
-      "            OOOO                ",
-      "             O  O               ",
-      "            OO  OO              ",
-      "            O    O              ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                              OOOOOO                            ",
+      "                            OOCCCCCCOO                          ",
+      "                           OCCCCCCCCCO                          ",
+      "                          OCC2222222CO                          ",
+      "                          OC22E222222O                          ",
+      "                         O2222B2222222O                         ",
+      "                         OW22222222222O                         ",
+      "                         OW22222222222O                         ",
+      "                         O222222222222O                         ",
+      "                        O22222222222222O                        ",
+      "                        O22222222222222O                        ",
+      "                        O22222222222222O                        ",
+      "                        O22222222222222O                        ",
+      "                        O22222222222222O                        ",
+      "                        O22222222222222O                        ",
+      "                        O22222222222222O                        ",
+      "                         O222222222222O                         ",
+      "                         O222222222222O                         ",
+      "                          O2222222222O                          ",
+      "                           OO222222OO                           ",
+      "                             OOOOOO                             ",
+      "                              O  O                              ",
+      "                             OO  OO                             ",
+      "                             O    O                             ",
+      "                            OO    OO                            ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- ПОДРОСТОК (КУРИЦА) ----------
     const TEEN_FEMALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OOCCCCCCCO           ",
-      "          OCCCCCCCCCO           ",
-      "         OCC2222222CO           ",
-      "         OC22E2222222O          ",
-      "         OC22B2222222O          ",
-      "        O2222222222222O         ",
-      "        O22222222222222O        ",
-      "       O222222222222222O        ",
-      "       O22222222222222O         ",
-      "      O22222222222222OO         ",
-      "      O2222222222222OOO         ",
-      "       O222222222222OO          ",
-      "       O222222222222O           ",
-      "        O2222222222O            ",
-      "         O22222222O             ",
-      "          OO2222OO              ",
-      "            OOOO                ",
-      "             O  O               ",
-      "            OO  OO              ",
-      "            O    O              ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                              OOOOOO                            ",
+      "                            OOCCCCCCOO                          ",
+      "                           OCCCCCCCCCO                          ",
+      "                          OCC1111111CO                          ",
+      "                          OC11E111112O                          ",
+      "                         O1111B1111112O                         ",
+      "                         OW11111111112O                         ",
+      "                         OW11111111112O                         ",
+      "                         O111111111112O                         ",
+      "                        O11111111111112O                        ",
+      "                        O11111111111112O                        ",
+      "                        O11111111111112O                        ",
+      "                        O11111111111122O                        ",
+      "                        O11111111111222O                        ",
+      "                        O11111111112222O                        ",
+      "                        O11111111122222O                        ",
+      "                         O111111122222O                         ",
+      "                         O111111222222O                         ",
+      "                          O1111222222O                          ",
+      "                           OO112222OO                           ",
+      "                             OOOOOO                             ",
+      "                              O  O                              ",
+      "                             OO  OO                             ",
+      "                             O    O                             ",
+      "                            OO    OO                            ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- ВЗРОСЛЫЙ ПЕТУХ ----------
     const ADULT_MALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OOCCCCCCCO           ",
-      "          OCCCCCCCCCO           ",
-      "         OCC2222222CO           ",
-      "         OC22E2222222O          ",
-      "         OC22B2222222O          ",
-      "        O2222222222222O         ",
-      "        O22222222222222O        ",
-      "       O22222222222222TO        ",
-      "       O2222222222222TTTO       ",
-      "      O2222222222222TTtttO      ",
-      "      O222222222222TTttttO      ",
-      "       O2222222222TTttttO       ",
-      "       O222222222TTTtttO        ",
-      "        O2222222TTTtttO         ",
-      "        O222222TTTtttO          ",
-      "         O2222TTTtttO           ",
-      "          OO22TTtttO            ",
-      "            OO2TttO             ",
-      "             OO  OO             ",
-      "            OO  OO              ",
-      "            O    O              ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                              OOOOOO                            ",
+      "                            OOCCCCCCOO                          ",
+      "                           OCCCCCCCCCO                          ",
+      "                          OCC2222222CO                          ",
+      "                          OC22E222222O                          ",
+      "                         O2222B2222222O                         ",
+      "                         OW22222222222O                         ",
+      "                         OW22222222222O                         ",
+      "                         O222222222222O                         ",
+      "                        O22222222222222O                        ",
+      "                        O22222222222222O                        ",
+      "                       O2222222222222222O                       ",
+      "                       O2222222222222222O                       ",
+      "                      O222222222222222222O                      ",
+      "                      O222222222222222222O                      ",
+      "                     O2222222222222222222TO                     ",
+      "                     O222222222222222222TTO                     ",
+      "                    O22222222222222222TTTTO                     ",
+      "                    O2222222222222222TTTttO                     ",
+      "                   O222222222222222TTTtttO                      ",
+      "                   O2222222222222TTTttttO                       ",
+      "                   O22222222222TTTttttttO                       ",
+      "                   O22222222TTTtttttttO                         ",
+      "                   O222222TTTttttttttO                          ",
+      "                    O2222TTTtttttttO                            ",
+      "                     O2TTTtttttttO                              ",
+      "                      OTTttttttO                                ",
+      "                       OO2222OO                                 ",
+      "                         OOOO                                   ",
+      "                          O  O                                  ",
+      "                         OO  OO                                 ",
+      "                         O    O                                 ",
+      "                        OO    OO                                ",
+      "                        O      O                                ",
+      "                       OO      OO                               ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- ВЗРОСЛАЯ КУРИЦА ----------
     const ADULT_FEMALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OOCCCCCCCO           ",
-      "          OCCCCCCCCCO           ",
-      "         OCC1111111CO           ",
-      "         OC11E1111112O          ",
-      "         OC11B1111112O          ",
-      "        O1111111111112O         ",
-      "        O11111111111112O        ",
-      "       O111111111111112O        ",
-      "       O111111111111112O        ",
-      "      O1111111111111122O        ",
-      "      O1111111111111222O        ",
-      "       O111111111112222O        ",
-      "       O111111111122222O        ",
-      "        O1111111122222O         ",
-      "        O1111111222222O         ",
-      "         O11112222222O          ",
-      "          OO1222222OO           ",
-      "            OO2222OO            ",
-      "             O  O               ",
-      "            OO  OO              ",
-      "            O    O              ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                              OOOOOO                            ",
+      "                            OOCCCCCCOO                          ",
+      "                           OCCCCCCCCCO                          ",
+      "                          OCC1111111CO                          ",
+      "                          OC11E111112O                          ",
+      "                         O1111B1111112O                         ",
+      "                         OW11111111112O                         ",
+      "                         OW11111111112O                         ",
+      "                         O111111111112O                         ",
+      "                        O11111111111112O                        ",
+      "                        O11111111111112O                        ",
+      "                       O1111111111111122O                       ",
+      "                       O1111111111111222O                       ",
+      "                      O11111111111122222O                       ",
+      "                      O11111111112222222O                       ",
+      "                     O1111111112222222222O                      ",
+      "                     O1111111122222222222O                      ",
+      "                    O111111122222222222222O                     ",
+      "                    O111111222222222222222O                     ",
+      "                   O1111122222222222222222O                     ",
+      "                   O1111222222222222222222O                     ",
+      "                   O111222222222222222222O                      ",
+      "                   O11222222222222222222O                       ",
+      "                   O1222222222222222222O                        ",
+      "                    O222222222222222222O                        ",
+      "                     O2222222222222222O                         ",
+      "                      OO222222222222OO                          ",
+      "                        OOOOOOOOOOOO                            ",
+      "                          O  O                                  ",
+      "                         OO  OO                                 ",
+      "                         O    O                                 ",
+      "                        OO    OO                                ",
+      "                        O      O                                ",
+      "                       OO      OO                               ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- СТАРЫЙ ПЕТУХ ----------
     const OLD_MALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OOCCCCCCCO           ",
-      "          OCCCCCCCCCO           ",
-      "         OCC2222222CO           ",
-      "         OC22E2222222O          ",
-      "         OC22B2222222O          ",
-      "        O2222222222222O         ",
-      "        O22222222222222O        ",
-      "       O22222222222222TO        ",
-      "       O2222222222222TTTO       ",
-      "      O2222222222222TTtttO      ",
-      "      O222222222222TTttttO      ",
-      "       O2222222222TTttttO       ",
-      "       O222222222TTTtttO        ",
-      "        O2222222TTTtttO         ",
-      "        O222222TTTtttO          ",
-      "         O2222TTTtttO           ",
-      "          OO22TTtttO            ",
-      "            OO2TttO             ",
-      "             OO  OO             ",
-      "            OO  OO              ",
-      "            O    O              ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                              OOOOOO                            ",
+      "                            OOCCCCCCOO                          ",
+      "                           OCCCCCCCCCO                          ",
+      "                          OCC2222222CO                          ",
+      "                          OC22E222222O                          ",
+      "                         O2222B2222222O                         ",
+      "                         OW22222222222O                         ",
+      "                         OW22222222222O                         ",
+      "                         O222222222222O                         ",
+      "                        O22222222222222O                        ",
+      "                        O22222222222222O                        ",
+      "                       O2222222222222222O                       ",
+      "                       O2222222222222222O                       ",
+      "                      O222222222222222222O                      ",
+      "                      O222222222222222222O                      ",
+      "                     O2222222222222222222TO                     ",
+      "                     O222222222222222222TTO                     ",
+      "                    O22222222222222222TTTTO                     ",
+      "                    O2222222222222222TTTttO                     ",
+      "                   O222222222222222TTTtttO                      ",
+      "                   O2222222222222TTTttttO                       ",
+      "                   O22222222222TTTttttttO                       ",
+      "                   O22222222TTTtttttttO                         ",
+      "                   O222222TTTttttttttO                          ",
+      "                    O2222TTTtttttttO                            ",
+      "                     O2TTTtttttttO                              ",
+      "                      OTTttttttO                                ",
+      "                       OO2222OO                                 ",
+      "                         OOOO                                   ",
+      "                          O  O                                  ",
+      "                         OO  OO                                 ",
+      "                         O    O                                 ",
+      "                        OO    OO                                ",
+      "                        O      O                                ",
+      "                       OO      OO                               ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- СТАРАЯ КУРИЦА ----------
     const OLD_FEMALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OOCCCCCCCO           ",
-      "          OCCCCCCCCCO           ",
-      "         OCC1111111CO           ",
-      "         OC11E1111112O          ",
-      "         OC11B1111112O          ",
-      "        O1111111111112O         ",
-      "        O11111111111112O        ",
-      "       O111111111111112O        ",
-      "       O111111111111112O        ",
-      "      O1111111111111122O        ",
-      "      O1111111111111222O        ",
-      "       O111111111112222O        ",
-      "       O111111111122222O        ",
-      "        O1111111122222O         ",
-      "        O1111111222222O         ",
-      "         O11112222222O          ",
-      "          OO1222222OO           ",
-      "            OO2222OO            ",
-      "             O  O               ",
-      "            OO  OO              ",
-      "            O    O              ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                              OOOOOO                            ",
+      "                            OOCCCCCCOO                          ",
+      "                           OCCCCCCCCCO                          ",
+      "                          OCC1111111CO                          ",
+      "                          OC11E111112O                          ",
+      "                         O1111B1111112O                         ",
+      "                         OW11111111112O                         ",
+      "                         OW11111111112O                         ",
+      "                         O111111111112O                         ",
+      "                        O11111111111112O                        ",
+      "                        O11111111111112O                        ",
+      "                       O1111111111111122O                       ",
+      "                       O1111111111111222O                       ",
+      "                      O11111111111122222O                       ",
+      "                      O11111111112222222O                       ",
+      "                     O1111111112222222222O                      ",
+      "                     O1111111122222222222O                      ",
+      "                    O111111122222222222222O                     ",
+      "                    O111111222222222222222O                     ",
+      "                   O1111122222222222222222O                     ",
+      "                   O1111222222222222222222O                     ",
+      "                   O111222222222222222222O                      ",
+      "                   O11222222222222222222O                       ",
+      "                   O1222222222222222222O                        ",
+      "                    O222222222222222222O                        ",
+      "                     O2222222222222222O                         ",
+      "                      OO222222222222OO                          ",
+      "                        OOOOOOOOOOOO                            ",
+      "                          O  O                                  ",
+      "                         OO  OO                                 ",
+      "                         O    O                                 ",
+      "                        OO    OO                                ",
+      "                        O      O                                ",
+      "                       OO      OO                               ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- УМИРАЮЩИЙ ПЕТУХ ----------
     const DYING_MALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OOCCCCCCCO           ",
-      "          OCCCCCCCCCO           ",
-      "         OCC2222222CO           ",
-      "         OC22E2222222O          ",
-      "         OC22B2222222O          ",
-      "        O2222222222222O         ",
-      "        O22222222222222O        ",
-      "       O22222222222222TO        ",
-      "       O2222222222222TTTO       ",
-      "      O2222222222222TTtttO      ",
-      "      O222222222222TTttttO      ",
-      "       O2222222222TTttttO       ",
-      "       O222222222TTTtttO        ",
-      "        O2222222TTTtttO         ",
-      "        O222222TTTtttO          ",
-      "         O2222TTTtttO           ",
-      "          OO22TTtttO            ",
-      "            OO2TttO             ",
-      "             OO  OO             ",
-      "            OO  OO              ",
-      "            O    O              ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                              OOOOOO                            ",
+      "                            OOCCCCCCOO                          ",
+      "                           OCCCCCCCCCO                          ",
+      "                          OCC2222222CO                          ",
+      "                          OC22E222222O                          ",
+      "                         O2222B2222222O                         ",
+      "                         OW22222222222O                         ",
+      "                         OW22222222222O                         ",
+      "                         O222222222222O                         ",
+      "                        O22222222222222O                        ",
+      "                        O22222222222222O                        ",
+      "                       O2222222222222222O                       ",
+      "                       O2222222222222222O                       ",
+      "                      O222222222222222222O                      ",
+      "                      O222222222222222222O                      ",
+      "                     O2222222222222222222TO                     ",
+      "                     O222222222222222222TTO                     ",
+      "                    O22222222222222222TTTTO                     ",
+      "                    O2222222222222222TTTttO                     ",
+      "                   O222222222222222TTTtttO                      ",
+      "                   O2222222222222TTTttttO                       ",
+      "                   O22222222222TTTttttttO                       ",
+      "                   O22222222TTTtttttttO                         ",
+      "                   O222222TTTttttttttO                          ",
+      "                    O2222TTTtttttttO                            ",
+      "                     O2TTTtttttttO                              ",
+      "                      OTTttttttO                                ",
+      "                       OO2222OO                                 ",
+      "                         OOOO                                   ",
+      "                          O  O                                  ",
+      "                         OO  OO                                 ",
+      "                         O    O                                 ",
+      "                        OO    OO                                ",
+      "                        O      O                                ",
+      "                       OO      OO                               ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- УМИРАЮЩАЯ КУРИЦА ----------
     const DYING_FEMALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OOCCCCCCCO           ",
-      "          OCCCCCCCCCO           ",
-      "         OCC1111111CO           ",
-      "         OC11E1111112O          ",
-      "         OC11B1111112O          ",
-      "        O1111111111112O         ",
-      "        O11111111111112O        ",
-      "       O111111111111112O        ",
-      "       O111111111111112O        ",
-      "      O1111111111111122O        ",
-      "      O1111111111111222O        ",
-      "       O111111111112222O        ",
-      "       O111111111122222O        ",
-      "        O1111111122222O         ",
-      "        O1111111222222O         ",
-      "         O11112222222O          ",
-      "          OO1222222OO           ",
-      "            OO2222OO            ",
-      "             O  O               ",
-      "            OO  OO              ",
-      "            O    O              ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                              OOOOOO                            ",
+      "                            OOCCCCCCOO                          ",
+      "                           OCCCCCCCCCO                          ",
+      "                          OCC1111111CO                          ",
+      "                          OC11E111112O                          ",
+      "                         O1111B1111112O                         ",
+      "                         OW11111111112O                         ",
+      "                         OW11111111112O                         ",
+      "                         O111111111112O                         ",
+      "                        O11111111111112O                        ",
+      "                        O11111111111112O                        ",
+      "                       O1111111111111122O                       ",
+      "                       O1111111111111222O                       ",
+      "                      O11111111111122222O                       ",
+      "                      O11111111112222222O                       ",
+      "                     O1111111112222222222O                      ",
+      "                     O1111111122222222222O                      ",
+      "                    O111111122222222222222O                     ",
+      "                    O111111222222222222222O                     ",
+      "                   O1111122222222222222222O                     ",
+      "                   O1111222222222222222222O                     ",
+      "                   O111222222222222222222O                      ",
+      "                   O11222222222222222222O                       ",
+      "                   O1222222222222222222O                        ",
+      "                    O222222222222222222O                        ",
+      "                     O2222222222222222O                         ",
+      "                      OO222222222222OO                          ",
+      "                        OOOOOOOOOOOO                            ",
+      "                          O  O                                  ",
+      "                         OO  OO                                 ",
+      "                         O    O                                 ",
+      "                        OO    OO                                ",
+      "                        O      O                                ",
+      "                       OO      OO                               ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ========== МАППИНГ ЦВЕТОВ ==========
@@ -591,10 +916,10 @@
         case '2': 
           if (modelType === 'egg') return C.eggShade;
           if (modelType === 'chick') return C.chickBase;
-          if (modelType.includes('dying')) return C.dyingBase;
-          if (modelType.includes('old')) return C.oldBase;
+          if (modelType.includes('dying')) return C.dyingBody;
+          if (modelType.includes('old')) return C.oldBody;
           if (modelType.includes('male')) return C.roosterBody;
-          return C.henBase;
+          return C.henBody;
         case '3': 
           if (modelType === 'egg') return C.eggShade;
           if (modelType === 'chick') return C.chickDark;
@@ -604,17 +929,24 @@
           return C.henDark;
         case 'T': return C.roosterTailLight;
         case 't': return C.roosterTailDark;
+        case 'U': return C.roosterTail;
         case 'C': 
-          if (modelType.includes('dying')) return C.dyingComb;
-          if (modelType.includes('old')) return C.oldComb;
+          if (modelType.includes('dying')) return C.dyingDark;
+          if (modelType.includes('old')) return C.oldDark;
           if (modelType.includes('male')) return C.roosterComb;
           return C.henComb;
-        case 'E': return C.henEye;
+        case 'W': 
+          if (modelType.includes('dying')) return C.dyingDark;
+          if (modelType.includes('old')) return C.oldDark;
+          if (modelType.includes('male')) return C.roosterWattle;
+          return C.henComb;
+        case 'E': return C.eye;
         case 'B': 
           if (modelType === 'chick') return C.chickBeak;
           if (modelType.includes('male')) return C.roosterBeak;
           return C.henBeak;
         case 'L': return C.leg;
+        case 'D': return C.legDark;
         default: return null;
       }
     }
@@ -624,8 +956,8 @@
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Темный фон для контраста (как в игре)
-      ctx.fillStyle = '#1e2a14';
+      // Фон
+      ctx.fillStyle = '#0a100a';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       for (let y = 0; y < SIZE; y++) {
