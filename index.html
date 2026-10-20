@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Пиксельные курицы — стадии жизни</title>
+  <title>Пиксельные курицы — 64x64 HD</title>
   <style>
     * {
       box-sizing: border-box;
@@ -21,17 +21,18 @@
     }
     .game-container {
       background: #2d3e2d;
-      border: 8px solid #5a7a4a;
+      border: 10px solid #5a7a4a;
       border-radius: 30px;
-      padding: 30px 40px 40px 40px;
-      box-shadow: 0 0 0 4px #1e2a1a, 0 20px 30px rgba(0, 0, 0, 0.5);
-      max-width: 1200px;
+      padding: 30px;
+      box-shadow: 0 0 0 6px #1e2a1a, 0 30px 40px rgba(0, 0, 0, 0.6);
+      max-width: 1400px;
+      overflow-x: auto;
     }
     h1 {
       color: #f0e8c0;
       text-align: center;
-      font-size: 28px;
-      letter-spacing: 3px;
+      font-size: 32px;
+      letter-spacing: 4px;
       margin-top: 0;
       margin-bottom: 25px;
       text-shadow: 4px 4px 0 #3a4a2a, 2px 2px 0 #7a9a5a;
@@ -42,41 +43,41 @@
       justify-content: center;
       gap: 20px;
       margin-bottom: 15px;
-      flex-wrap: wrap;
     }
     .gender-label {
       color: #e0d8b0;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
       text-align: center;
       background: #4a5e3a;
-      padding: 6px 30px;
+      padding: 8px 40px;
       border-radius: 40px;
-      border: 3px solid #7a9a5a;
+      border: 4px solid #7a9a5a;
       letter-spacing: 2px;
-      box-shadow: inset 0 -4px 0 #2a3a1a;
+      box-shadow: inset 0 -6px 0 #2a3a1a;
     }
     .stages-row {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 12px;
-      margin-bottom: 30px;
+      gap: 15px;
+      margin-bottom: 40px;
     }
     .stage-card {
       background: #3a4e2e;
       border-radius: 20px;
-      padding: 12px 8px 8px 8px;
-      box-shadow: 0 8px 0 #1e2a14, 0 12px 12px rgba(0, 0, 0, 0.3);
-      border: 3px solid #7a9a5a;
+      padding: 15px 10px 10px 10px;
+      box-shadow: 0 10px 0 #1e2a14, 0 15px 15px rgba(0, 0, 0, 0.4);
+      border: 4px solid #7a9a5a;
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 130px;
-      transition: transform 0.1s;
+      width: 160px;
+      transition: transform 0.15s, box-shadow 0.15s;
     }
     .stage-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-8px);
+      box-shadow: 0 18px 0 #1e2a14, 0 20px 20px rgba(0, 0, 0, 0.5);
     }
     .stage-card.male {
       border-color: #5a7a9a;
@@ -86,13 +87,13 @@
     }
     .stage-name {
       color: #f0e8c0;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: bold;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       text-align: center;
       letter-spacing: 0.5px;
       background: #2a3a1e;
-      padding: 4px 10px;
+      padding: 5px 10px;
       border-radius: 12px;
       width: 100%;
       white-space: nowrap;
@@ -101,27 +102,27 @@
     canvas {
       image-rendering: crisp-edges;
       image-rendering: pixelated;
-      width: 112px;
-      height: 112px;
+      width: 128px; /* Отображаемый размер */
+      height: 128px;
       display: block;
       background: #1e2a14;
-      border-radius: 10px;
-      box-shadow: inset 0 0 0 3px #4a5e3a;
+      border-radius: 12px;
+      box-shadow: inset 0 0 0 4px #4a5e3a;
     }
     .footer {
       text-align: center;
       color: #9ab88a;
-      font-size: 14px;
+      font-size: 15px;
       margin-top: 20px;
-      border-top: 3px solid #4a6e3a;
-      padding-top: 16px;
+      border-top: 4px solid #4a6e3a;
+      padding-top: 20px;
       letter-spacing: 1px;
     }
   </style>
 </head>
 <body>
 <div class="game-container">
-  <h1>🐔 ВЫЖИВАНИЕ КУРИЦ 🐔</h1>
+  <h1>🐔 ЭВОЛЮЦИЯ КУРИЦ 🐔</h1>
 
   <!-- МУЖСКОЙ РЯД -->
   <div class="gender-row">
@@ -135,37 +136,38 @@
   </div>
   <div class="stages-row" id="femaleRow"></div>
 
-  <div class="footer">пиксельные модели 32x32 • стадии жизни</div>
+  <div class="footer">высокодетализированные пиксельные модели 64x64</div>
 </div>
 
 <script>
   (function(){
-    const SIZE = 32;          // Новая сетка 32x32
-    const SCALE = 3.5;        // Масштаб для canvas (112px)
+    const SIZE = 64;          // Новая сетка 64x64 (в 4 раза больше деталей)
+    const DISPLAY_SIZE = 128; // Размер на экране
 
-    // ========== ПАЛИТРА (на основе референсов) ==========
+    // ========== ПАЛИТРА (обогащенная) ==========
     const C = {
       // Яйцо
-      eggBase: '#f4ecd8', eggShade: '#d4c4a8', eggSpot: '#c8b898', eggOutline: '#8a7a5a',
+      eggBase: '#fcecd0', eggShade: '#e0c8a0', eggSpot: '#c8a878', eggOutline: '#604830',
       // Цыплята
-      chickYellow: '#fce470', chickLight: '#fff4a0', chickDark: '#e0b830', 
-      chickBeak: '#f08c20', chickEye: '#181818',
+      chickBase: '#fce060', chickLight: '#fff490', chickDark: '#d0b040', 
+      chickBeak: '#f08020', chickEye: '#101010', chickOutline: '#403010',
       // Петух
-      roosterBody: '#b04818', roosterDark: '#782810', roosterLight: '#d06828',
-      roosterTail: '#186040', roosterTailDark: '#0e4028', roosterTailLight: '#289060',
-      roosterComb: '#d82818', roosterWattle: '#b81810', roosterBeak: '#f8b020',
+      roosterBody: '#c05020', roosterDark: '#802810', roosterLight: '#e07030',
+      roosterTail: '#186040', roosterTailDark: '#0c3820', roosterTailLight: '#30a060',
+      roosterComb: '#e02010', roosterWattle: '#b01010', roosterBeak: '#f8b020',
       // Курица
-      henBody: '#f0d8b0', henDark: '#c8a880', henLight: '#fff0d0',
-      henComb: '#d02818', henBeak: '#f8b020',
+      henBase: '#fce0b8', henDark: '#d0b080', henLight: '#fff4d8',
+      henComb: '#e02010', henBeak: '#f8b020',
       // Старость
-      oldBody: '#c8c0b0', oldDark: '#a09888', oldLight: '#e0d8c8',
+      oldBase: '#c8c0b0', oldDark: '#908070', oldLight: '#e8e0d0',
       // Смерть
-      dyingBody: '#988878', dyingDark: '#685848', dyingLight: '#b8a898',
+      dyingBase: '#a09080', dyingDark: '#605040', dyingLight: '#c0b0a0',
       // Общие
-      black: '#181818', white: '#ffffff', outline: '#241c14', leg: '#382818', legLight: '#584838'
+      outline: '#201810', leg: '#302818', legLight: '#504838',
+      white: '#ffffff', black: '#101010'
     };
 
-    // ========== ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ОТРИСОВКИ ==========
+    // ========== ФУНКЦИЯ ОТРИСОВКИ ==========
     function drawPixel(ctx, x, y, color) {
       if (color) {
         ctx.fillStyle = color;
@@ -173,429 +175,763 @@
       }
     }
 
-    // ========== МОДЕЛИ 32x32 ==========
-    // Легенда символов:
-    // ' ' - прозрачный, 'O' - контур (outline)
-    // 'E' - скорлупа, 'e' - тень скорлупы, 's' - пятно, 'c' - трещина
-    // 'Y' - цыпленок желтый, 'y' - светлый, 'w' - темный, 'B' - клюв, 'K' - глаз
+    // ========== МОДЕЛИ 64x64 ==========
+    // Легенда:
+    // ' ' - прозрачный, 'O' - контур
+    // 'E' - скорлупа, 'e' - тень, 's' - пятно
+    // 'Y' - цыпленок, 'y' - светлый, 'w' - темный, 'B' - клюв, 'K' - глаз
     // 'R' - тело петуха, 'r' - темное, 'L' - светлое
     // 'T' - хвост петуха, 't' - темный хвост, 'l' - светлый хвост
-    // 'C' - гребень петуха, 'W' - бородка петуха
+    // 'C' - гребень, 'W' - бородка
     // 'M' - тело курицы, 'm' - темное, 'n' - светлое
     // 'G' - старое тело, 'g' - темное, 'h' - светлое
     // 'D' - умирающее тело, 'd' - темное, 'f' - светлое
-    // 'P' - клюв (общий), 'K' - глаз (общий)
-    // 'A' - лапка, 'a' - светлая лапка
+    // 'A' - лапка, 'P' - клюв
 
     // ---------- ЯЙЦО ----------
     const EGG = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OOEEEEEEOO           ",
-      "          OEEEEEEEEEEO          ",
-      "         OEEEEEEEEEEEEO         ",
-      "        OEEEEsEEEEEEEEEO        ",
-      "        OEEsEEEEEEEEEEEO        ",
-      "       OEEEEEEEEEEEdEEEEO       ",
-      "       OEEEEEEEEEEdEEEEEO       ",
-      "       OEEEEEEEEEEEEEEEEO       ",
-      "       OEEEEEEEEEEEEEEEEO       ",
-      "       OEEEEEEEEEEEEEEeeO       ",
-      "        OEEEEEEEEEEEeeEO        ",
-      "        OEEEEEEEEEEeeEEO        ",
-      "         OEEEEEEEEEEeEO         ",
-      "          OEEEEEEEEeEO          ",
-      "           OOEEEEeeOO           ",
-      "             OOOOOO             ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                             OOOOOO                             ",
+      "                           OOEEEEEEOO                           ",
+      "                         OOEEEEEEEEEEOO                         ",
+      "                        OEEEEEEEEEEEEEEO                        ",
+      "                       OEEEEEEEEEEEEEEEEO                       ",
+      "                      OEEEEEEEEEEEEEEEEEEO                      ",
+      "                      OEEEEEEEEEEEEEEEEEEO                      ",
+      "                     OEEEEEEEEEEEEEEEEEEEEO                     ",
+      "                     OEEEEEEEEEEEEEEEEEEEEO                     ",
+      "                    OEEEEEEEEEEEEEEEEEEEEEEO                    ",
+      "                    OEEEEEEsEEEEEEEEEEEEEEEO                    ",
+      "                    OEEEEEssEEEEEEEEEEEEEEEO                    ",
+      "                    OEEEEEEEEEEEEEEEEEEEEEEO                    ",
+      "                    OEEEEEEEEEEEEEEEEEEEEEEO                    ",
+      "                    OEEEEEEEEEEEEEEEEEeEEEEO                    ",
+      "                    OEEEEEEEEEEEEEEEEeeEEEEO                    ",
+      "                    OEEEEEEEEEEEEEEEEEEEEEEO                    ",
+      "                    OEEEEEEEEEEEEEEEEEEEEEEO                    ",
+      "                     OEEEEEEEEEEEEEEEEEEEEO                     ",
+      "                     OEEEEEEEEEEEEEEEEEEeeO                     ",
+      "                      OEEEEEEEEEEEEEEEEeeO                      ",
+      "                      OEEEEEEEEEEEEEEEEeeO                      ",
+      "                       OEEEEEEEEEEEEEEeeO                       ",
+      "                        OEEEEEEEEEEEEeeO                        ",
+      "                         OOEEEEEEEEEEOO                         ",
+      "                           OOEEEEEEOO                           ",
+      "                             OOOOOO                             ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- ЦЫПЛЁНОК (вылупившийся) ----------
     const CHICK_HATCHED = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OOYYYYYYOO           ",
-      "          OYYYYYYYYYYO          ",
-      "         OYYYYYYYYYYYYO         ",
-      "        OYYKYYYYYYKYYYYO        ",
-      "        OYYKYYYYYYKYYYYO        ",
-      "        OYYYYYYYYYYYYYYO        ",
-      "        OYYYYYBBBBYYYYYO        ",
-      "         OYYYYYYYYYYYYO         ",
-      "          OYYYYYYYYYYO          ",
-      "           OOYYYYYYOO           ",
-      "          OOYYYYYYYYOO          ",
-      "         OYYYYYYYYYYYYO         ",
-      "         OYYYYYYYYYYYYO         ",
-      "          OYYYYYYYYYYO          ",
-      "           OOYYYYYYOO           ",
-      "             OOOOOO             ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                             OOOOOO                             ",
+      "                           OOYYYYYYOO                           ",
+      "                         OOYYYYYYYYYYOO                         ",
+      "                        OYYYYYYYYYYYYYYO                        ",
+      "                       OYYYYYYYYYYYYYYYYO                       ",
+      "                      OYYKYYYYYYYYYYKYYYYO                      ",
+      "                      OYYKYYYYYYYYYYKYYYYO                      ",
+      "                      OYYYYYYYYYYYYYYYYYYO                      ",
+      "                      OYYYYYYYBBBBYYYYYYYO                      ",
+      "                      OYYYYYYBBBBBBYYYYYYO                      ",
+      "                       OYYYYYYYYYYYYYYYYO                       ",
+      "                       OYYYYYYYYYYYYYYYYO                       ",
+      "                        OYYYYYYYYYYYYYYO                        ",
+      "                        OYYYYYYYYYYYYYYO                        ",
+      "                         OYYYYYYYYYYYYO                         ",
+      "                         OYYYYYYYYYYYYO                         ",
+      "                          OYYYYYYYYYYO                          ",
+      "                          OYYYYYYYYYYO                          ",
+      "                           OOYYYYYYOO                           ",
+      "                             OOOOOO                             ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- ЦЫПЛЁНОК (обычный) ----------
     const CHICK_NORMAL = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OOYYYYYYOO           ",
-      "          OYYYYYYYYYYO          ",
-      "         OYYYYYYYYYYYYO         ",
-      "        OYYKYYYYYYKYYYYO        ",
-      "        OYYKYYYYYYKYYYYO        ",
-      "        OYYYYYYYYYYYYYYO        ",
-      "        OYYYYYBBBBYYYYYO        ",
-      "         OYYYYYYYYYYYYO         ",
-      "          OYYYYYYYYYYO          ",
-      "           OOYYYYYYOO           ",
-      "          OOYYYYYYYYOO          ",
-      "         OYYYYYYYYYYYYO         ",
-      "         OYYYYYYYYYYYYO         ",
-      "         OYYYYYYYYYYYYO         ",
-      "          OYYYYYYYYYYO          ",
-      "           OOYYYYYYOO           ",
-      "             OOOOOO             ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                             OOOOOO                             ",
+      "                           OOYYYYYYOO                           ",
+      "                         OOYYYYYYYYYYOO                         ",
+      "                        OYYYYYYYYYYYYYYO                        ",
+      "                       OYYYYYYYYYYYYYYYYO                       ",
+      "                      OYYKYYYYYYYYYYKYYYYO                      ",
+      "                      OYYKYYYYYYYYYYKYYYYO                      ",
+      "                      OYYYYYYYYYYYYYYYYYYO                      ",
+      "                      OYYYYYYYBBBBYYYYYYYO                      ",
+      "                      OYYYYYYBBBBBBYYYYYYO                      ",
+      "                       OYYYYYYYYYYYYYYYYO                       ",
+      "                       OYYYYYYYYYYYYYYYYO                       ",
+      "                        OYYYYYYYYYYYYYYO                        ",
+      "                        OYYYYYYYYYYYYYYO                        ",
+      "                         OYYYYYYYYYYYYO                         ",
+      "                         OYYYYYYYYYYYYO                         ",
+      "                          OYYYYYYYYYYO                          ",
+      "                          OYYYYYYYYYYO                          ",
+      "                           OOYYYYYYOO                           ",
+      "                             OOOOOO                             ",
+      "                            OO    OO                            ",
+      "                           OAA    AAO                           ",
+      "                           OAA    AAO                           ",
+      "                          OOOO  OOOO                            ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- ПОДРОСТОК (ПЕТУХ) ----------
     const TEEN_MALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "              OOOOOO            ",
-      "            OOCCCCCCOO          ",
-      "           OCCCCCCCCCO          ",
-      "           OCCCRRRRCCO          ",
-      "           OCCRRRRRRCO          ",
-      "           OCRRRRRRRCO          ",
-      "           ORRRRRRRRRO          ",
-      "          ORRRRKRRRKRRRO        ",
-      "          ORRRRRPRRRRRRO        ",
-      "          ORRRRRRRRRRRRO        ",
-      "          OWRRRRRRRRRRRO        ",
-      "           ORRRRRRRRRRO         ",
-      "           ORRRRRRRRRRO         ",
-      "           ORRRRRRRRRRO         ",
-      "            ORRRRRRRRO          ",
-      "            ORRRRRRRRO          ",
-      "             ORRRRRRO           ",
-      "             ORRRRRRO           ",
-      "             OORRRROO           ",
-      "              OOOOOO            ",
-      "             OO    OO           ",
-      "            OAA    AAO          ",
-      "            OAA    AAO          ",
-      "           OOOO  OOOO           ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                              OOOOOO                            ",
+      "                            OOCCCCCCOO                          ",
+      "                           OCCCCCCCCCO                          ",
+      "                           OCCCRRRRCCO                          ",
+      "                           OCCRRRRRRCO                          ",
+      "                           OCRRRRRRRCO                          ",
+      "                           ORRRRRRRRRO                          ",
+      "                          ORRRRKRRRKRRRO                        ",
+      "                          ORRRRRPRRRRRRO                        ",
+      "                          ORRRRRRRRRRRRO                        ",
+      "                          OWRRRRRRRRRRRO                        ",
+      "                           ORRRRRRRRRRO                         ",
+      "                           ORRRRRRRRRRO                         ",
+      "                           ORRRRRRRRRRO                         ",
+      "                            ORRRRRRRRO                          ",
+      "                            ORRRRRRRRO                          ",
+      "                             ORRRRRRO                           ",
+      "                             ORRRRRRO                           ",
+      "                             OORRRROO                           ",
+      "                              OOOOOO                            ",
+      "                             OO    OO                           ",
+      "                            OAA    AAO                          ",
+      "                            OAA    AAO                          ",
+      "                           OOOO  OOOO                           ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- ПОДРОСТОК (КУРИЦА) ----------
     const TEEN_FEMALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OOCCCCCCOO           ",
-      "          OCCCCCCCCCO           ",
-      "          OCCMMMMMMCO           ",
-      "          OCMMMMMMMMCO          ",
-      "          OMMMMMMMMMMO          ",
-      "         OMMMMMMMMMMMMO         ",
-      "         OMMMKMMMMKMMMO         ",
-      "         OMMMMPMMMMMMMO         ",
-      "         OMMMMMMMMMMMMO         ",
-      "         OMMMMMMMMMMMMO         ",
-      "          OMMMMMMMMMMO          ",
-      "          OMMMMMMMMMMO          ",
-      "          OMMMMMMMMMMO          ",
-      "           OMMMMMMMMO           ",
-      "           OMMMMMMMMO           ",
-      "            OMMMMMMO            ",
-      "            OMMMMMMO            ",
-      "            OOMMMMOO            ",
-      "             OOOOOO             ",
-      "            OO    OO            ",
-      "           OAA    AAO           ",
-      "           OAA    AAO           ",
-      "          OOOO  OOOO            ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                             OOOOOO                             ",
+      "                           OOCCCCCCOO                           ",
+      "                          OCCCCCCCCCO                           ",
+      "                          OCCMMMMMMCO                           ",
+      "                          OCMMMMMMMMCO                          ",
+      "                          OMMMMMMMMMMO                          ",
+      "                         OMMMMMMMMMMMMO                         ",
+      "                         OMMMKMMMMKMMMO                         ",
+      "                         OMMMMPMMMMMMMO                         ",
+      "                         OMMMMMMMMMMMMO                         ",
+      "                         OMMMMMMMMMMMMO                         ",
+      "                          OMMMMMMMMMMO                          ",
+      "                          OMMMMMMMMMMO                          ",
+      "                          OMMMMMMMMMMO                          ",
+      "                           OMMMMMMMMO                           ",
+      "                           OMMMMMMMMO                           ",
+      "                            OMMMMMMO                            ",
+      "                            OMMMMMMO                            ",
+      "                            OOMMMMOO                            ",
+      "                             OOOOOO                             ",
+      "                            OO    OO                            ",
+      "                           OAA    AAO                           ",
+      "                           OAA    AAO                           ",
+      "                          OOOO  OOOO                            ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- ВЗРОСЛЫЙ ПЕТУХ ----------
     const ADULT_MALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "              OOOOOO            ",
-      "            OOCCCCCCOO          ",
-      "           OCCCCCCCCCO          ",
-      "           OCCCRRRRCCO          ",
-      "           OCCRRRRRRCO          ",
-      "           OCRRRRRRRCO          ",
-      "           ORRRRRRRRRO          ",
-      "          ORRRRKRRRKRRRO        ",
-      "          ORRRRRPRRRRRRO        ",
-      "          ORRRRRRRRRRRRO        ",
-      "          OWRRRRRRRRRRRO        ",
-      "           ORRRRRRRRRRO         ",
-      "           ORRRRRRRRRRO         ",
-      "           ORRRRRRRRRRO         ",
-      "            ORRRRRRRRO          ",
-      "            ORRRRRRRRO          ",
-      "             ORRRRRRO           ",
-      "             ORRRRRRO           ",
-      "             OORRRROO           ",
-      "              OOOOOO            ",
-      "             OO    OO           ",
-      "            OAA    AAO          ",
-      "            OAA    AAO          ",
-      "           OOOO  OOOO           ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                              OOOOOO                            ",
+      "                            OOCCCCCCOO                          ",
+      "                           OCCCCCCCCCO                          ",
+      "                           OCCCRRRRCCO                          ",
+      "                           OCCRRRRRRCO                          ",
+      "                           OCRRRRRRRCO                          ",
+      "                           ORRRRRRRRRO                          ",
+      "                          ORRRRKRRRKRRRO                        ",
+      "                          ORRRRRPRRRRRRO                        ",
+      "                          ORRRRRRRRRRRRO                        ",
+      "                          OWRRRRRRRRRRRO                        ",
+      "                           ORRRRRRRRRRO                         ",
+      "                           ORRRRRRRRRRO                         ",
+      "                           ORRRRRRRRRRO                         ",
+      "                            ORRRRRRRRO                          ",
+      "                            ORRRRRRRRO                          ",
+      "                             ORRRRRRO                           ",
+      "                             ORRRRRRO                           ",
+      "                             OORRRROO                           ",
+      "                              OOOOOO                            ",
+      "                             OO    OO                           ",
+      "                            OAA    AAO                          ",
+      "                            OAA    AAO                          ",
+      "                           OOOO  OOOO                           ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- ВЗРОСЛАЯ КУРИЦА ----------
     const ADULT_FEMALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OOCCCCCCOO           ",
-      "          OCCCCCCCCCO           ",
-      "          OCCMMMMMMCO           ",
-      "          OCMMMMMMMMCO          ",
-      "          OMMMMMMMMMMO          ",
-      "         OMMMMMMMMMMMMO         ",
-      "         OMMMKMMMMKMMMO         ",
-      "         OMMMMPMMMMMMMO         ",
-      "         OMMMMMMMMMMMMO         ",
-      "         OMMMMMMMMMMMMO         ",
-      "          OMMMMMMMMMMO          ",
-      "          OMMMMMMMMMMO          ",
-      "          OMMMMMMMMMMO          ",
-      "           OMMMMMMMMO           ",
-      "           OMMMMMMMMO           ",
-      "            OMMMMMMO            ",
-      "            OMMMMMMO            ",
-      "            OOMMMMOO            ",
-      "             OOOOOO             ",
-      "            OO    OO            ",
-      "           OAA    AAO           ",
-      "           OAA    AAO           ",
-      "          OOOO  OOOO            ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                             OOOOOO                             ",
+      "                           OOCCCCCCOO                           ",
+      "                          OCCCCCCCCCO                           ",
+      "                          OCCMMMMMMCO                           ",
+      "                          OCMMMMMMMMCO                          ",
+      "                          OMMMMMMMMMMO                          ",
+      "                         OMMMMMMMMMMMMO                         ",
+      "                         OMMMKMMMMKMMMO                         ",
+      "                         OMMMMPMMMMMMMO                         ",
+      "                         OMMMMMMMMMMMMO                         ",
+      "                         OMMMMMMMMMMMMO                         ",
+      "                          OMMMMMMMMMMO                          ",
+      "                          OMMMMMMMMMMO                          ",
+      "                          OMMMMMMMMMMO                          ",
+      "                           OMMMMMMMMO                           ",
+      "                           OMMMMMMMMO                           ",
+      "                            OMMMMMMO                            ",
+      "                            OMMMMMMO                            ",
+      "                            OOMMMMOO                            ",
+      "                             OOOOOO                             ",
+      "                            OO    OO                            ",
+      "                           OAA    AAO                           ",
+      "                           OAA    AAO                           ",
+      "                          OOOO  OOOO                            ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- СТАРЫЙ ПЕТУХ ----------
     const OLD_MALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "              OOOOOO            ",
-      "            OOGGGGGGOO          ",
-      "           OGGGGGGGGGO          ",
-      "           OGGGRRRRGGO          ",
-      "           OGGRRRRRRGO          ",
-      "           OGRRRRRRRGO          ",
-      "           ORRRRRRRRRO          ",
-      "          ORRRRKRRRKRRRO        ",
-      "          ORRRRRPRRRRRRO        ",
-      "          ORRRRRRRRRRRRO        ",
-      "          OWRRRRRRRRRRRO        ",
-      "           ORRRRRRRRRRO         ",
-      "           ORRRRRRRRRRO         ",
-      "           ORRRRRRRRRRO         ",
-      "            ORRRRRRRRO          ",
-      "            ORRRRRRRRO          ",
-      "             ORRRRRRO           ",
-      "             ORRRRRRO           ",
-      "             OORRRROO           ",
-      "              OOOOOO            ",
-      "             OO    OO           ",
-      "            OAA    AAO          ",
-      "            OAA    AAO          ",
-      "           OOOO  OOOO           ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                              OOOOOO                            ",
+      "                            OOGGGGGGOO                          ",
+      "                           OGGGGGGGGGO                          ",
+      "                           OGGGRRRRGGO                          ",
+      "                           OGGRRRRRRGO                          ",
+      "                           OGRRRRRRRGO                          ",
+      "                           ORRRRRRRRRO                          ",
+      "                          ORRRRKRRRKRRRO                        ",
+      "                          ORRRRRPRRRRRRO                        ",
+      "                          ORRRRRRRRRRRRO                        ",
+      "                          OWRRRRRRRRRRRO                        ",
+      "                           ORRRRRRRRRRO                         ",
+      "                           ORRRRRRRRRRO                         ",
+      "                           ORRRRRRRRRRO                         ",
+      "                            ORRRRRRRRO                          ",
+      "                            ORRRRRRRRO                          ",
+      "                             ORRRRRRO                           ",
+      "                             ORRRRRRO                           ",
+      "                             OORRRROO                           ",
+      "                              OOOOOO                            ",
+      "                             OO    OO                           ",
+      "                            OAA    AAO                          ",
+      "                            OAA    AAO                          ",
+      "                           OOOO  OOOO                           ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- СТАРАЯ КУРИЦА ----------
     const OLD_FEMALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OOGGGGGGOO           ",
-      "          OGGGGGGGGGO           ",
-      "          OGGMMMMMMGO           ",
-      "          OGMMMMMMMMGO          ",
-      "          OMMMMMMMMMMO          ",
-      "         OMMMMMMMMMMMMO         ",
-      "         OMMMKMMMMKMMMO         ",
-      "         OMMMMPMMMMMMMO         ",
-      "         OMMMMMMMMMMMMO         ",
-      "         OMMMMMMMMMMMMO         ",
-      "          OMMMMMMMMMMO          ",
-      "          OMMMMMMMMMMO          ",
-      "          OMMMMMMMMMMO          ",
-      "           OMMMMMMMMO           ",
-      "           OMMMMMMMMO           ",
-      "            OMMMMMMO            ",
-      "            OMMMMMMO            ",
-      "            OOMMMMOO            ",
-      "             OOOOOO             ",
-      "            OO    OO            ",
-      "           OAA    AAO           ",
-      "           OAA    AAO           ",
-      "          OOOO  OOOO            ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                             OOOOOO                             ",
+      "                           OOGGGGGGOO                           ",
+      "                          OGGGGGGGGGO                           ",
+      "                          OGGMMMMMMGO                           ",
+      "                          OGMMMMMMMMGO                          ",
+      "                          OMMMMMMMMMMO                          ",
+      "                         OMMMMMMMMMMMMO                         ",
+      "                         OMMMKMMMMKMMMO                         ",
+      "                         OMMMMPMMMMMMMO                         ",
+      "                         OMMMMMMMMMMMMO                         ",
+      "                         OMMMMMMMMMMMMO                         ",
+      "                          OMMMMMMMMMMO                          ",
+      "                          OMMMMMMMMMMO                          ",
+      "                          OMMMMMMMMMMO                          ",
+      "                           OMMMMMMMMO                           ",
+      "                           OMMMMMMMMO                           ",
+      "                            OMMMMMMO                            ",
+      "                            OMMMMMMO                            ",
+      "                            OOMMMMOO                            ",
+      "                             OOOOOO                             ",
+      "                            OO    OO                            ",
+      "                           OAA    AAO                           ",
+      "                           OAA    AAO                           ",
+      "                          OOOO  OOOO                            ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- УМИРАЮЩИЙ ПЕТУХ ----------
     const DYING_MALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "              OOOOOO            ",
-      "            OODDDDDDOO          ",
-      "           ODDDDDDDDDO          ",
-      "           ODDDRRRRDDO          ",
-      "           ODDRRRRRRDO          ",
-      "           ODRRRRRRRDO          ",
-      "           ORRRRRRRRRO          ",
-      "          ORRRRKRRRKRRRO        ",
-      "          ORRRRRPRRRRRRO        ",
-      "          ORRRRRRRRRRRRO        ",
-      "          OWRRRRRRRRRRRO        ",
-      "           ORRRRRRRRRRO         ",
-      "           ORRRRRRRRRRO         ",
-      "           ORRRRRRRRRRO         ",
-      "            ORRRRRRRRO          ",
-      "            ORRRRRRRRO          ",
-      "             ORRRRRRO           ",
-      "             ORRRRRRO           ",
-      "             OORRRROO           ",
-      "              OOOOOO            ",
-      "             OO    OO           ",
-      "            OAA    AAO          ",
-      "            OAA    AAO          ",
-      "           OOOO  OOOO           ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                              OOOOOO                            ",
+      "                            OODDDDDDOO                          ",
+      "                           ODDDDDDDDDO                          ",
+      "                           ODDDRRRRDDO                          ",
+      "                           ODDRRRRRRDO                          ",
+      "                           ODRRRRRRRDO                          ",
+      "                           ORRRRRRRRRO                          ",
+      "                          ORRRRKRRRKRRRO                        ",
+      "                          ORRRRRPRRRRRRO                        ",
+      "                          ORRRRRRRRRRRRO                        ",
+      "                          OWRRRRRRRRRRRO                        ",
+      "                           ORRRRRRRRRRO                         ",
+      "                           ORRRRRRRRRRO                         ",
+      "                           ORRRRRRRRRRO                         ",
+      "                            ORRRRRRRRO                          ",
+      "                            ORRRRRRRRO                          ",
+      "                             ORRRRRRO                           ",
+      "                             ORRRRRRO                           ",
+      "                             OORRRROO                           ",
+      "                              OOOOOO                            ",
+      "                             OO    OO                           ",
+      "                            OAA    AAO                          ",
+      "                            OAA    AAO                          ",
+      "                           OOOO  OOOO                           ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
     // ---------- УМИРАЮЩАЯ КУРИЦА ----------
     const DYING_FEMALE = [
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "             OOOOOO             ",
-      "           OODDDDDDOO           ",
-      "          ODDDDDDDDDO           ",
-      "          ODDMMMMMMDO           ",
-      "          ODMMMMMMMMDO          ",
-      "          OMMMMMMMMMMO          ",
-      "         OMMMMMMMMMMMMO         ",
-      "         OMMMKMMMMKMMMO         ",
-      "         OMMMMPMMMMMMMO         ",
-      "         OMMMMMMMMMMMMO         ",
-      "         OMMMMMMMMMMMMO         ",
-      "          OMMMMMMMMMMO          ",
-      "          OMMMMMMMMMMO          ",
-      "          OMMMMMMMMMMO          ",
-      "           OMMMMMMMMO           ",
-      "           OMMMMMMMMO           ",
-      "            OMMMMMMO            ",
-      "            OMMMMMMO            ",
-      "            OOMMMMOO            ",
-      "             OOOOOO             ",
-      "            OO    OO            ",
-      "           OAA    AAO           ",
-      "           OAA    AAO           ",
-      "          OOOO  OOOO            ",
-      "                                ",
-      "                                ",
-      "                                ",
-      "                                "
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                             OOOOOO                             ",
+      "                           OODDDDDDOO                           ",
+      "                          ODDDDDDDDDO                           ",
+      "                          ODDMMMMMMDO                           ",
+      "                          ODMMMMMMMMDO                          ",
+      "                          OMMMMMMMMMMO                          ",
+      "                         OMMMMMMMMMMMMO                         ",
+      "                         OMMMKMMMMKMMMO                         ",
+      "                         OMMMMPMMMMMMMO                         ",
+      "                         OMMMMMMMMMMMMO                         ",
+      "                         OMMMMMMMMMMMMO                         ",
+      "                          OMMMMMMMMMMO                          ",
+      "                          OMMMMMMMMMMO                          ",
+      "                          OMMMMMMMMMMO                          ",
+      "                           OMMMMMMMMO                           ",
+      "                           OMMMMMMMMO                           ",
+      "                            OMMMMMMO                            ",
+      "                            OMMMMMMO                            ",
+      "                            OOMMMMOO                            ",
+      "                             OOOOOO                             ",
+      "                            OO    OO                            ",
+      "                           OAA    AAO                           ",
+      "                           OAA    AAO                           ",
+      "                          OOOO  OOOO                            ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                ",
+      "                                                                "
     ];
 
-    // ========== МАППИНГ СИМВОЛОВ В ЦВЕТА ==========
+    // ========== МАППИНГ ЦВЕТОВ ==========
     function getColorForChar(ch, modelType) {
-      // Общие символы для всех
       switch(ch) {
         case 'O': return C.outline;
         case 'A': return C.leg;
-        case 'a': return C.legLight;
-        case 'P': return C.roosterBeak; // клюв (оранжевый)
-        case 'K': return C.black;       // глаз
+        case 'P': return C.roosterBeak;
+        case 'K': return C.black;
         case 'W': return C.roosterWattle;
       }
 
-      // Специфичные для модели
       if (modelType === 'egg') {
         switch(ch) {
           case 'E': return C.eggBase;
@@ -607,7 +943,7 @@
 
       if (modelType === 'chick') {
         switch(ch) {
-          case 'Y': return C.chickYellow;
+          case 'Y': return C.chickBase;
           case 'y': return C.chickLight;
           case 'w': return C.chickDark;
           case 'B': return C.chickBeak;
@@ -615,7 +951,6 @@
         }
       }
 
-      // Для остальных определяем базовые цвета в зависимости от типа
       const isMale = modelType.includes('male') || modelType.includes('_m');
       const isFemale = modelType.includes('female') || modelType.includes('_f');
       const isOld = modelType.includes('old');
@@ -624,23 +959,20 @@
       let body, dark, light, comb;
 
       if (isDying) {
-        body = C.dyingBody; dark = C.dyingDark; light = C.dyingLight; comb = C.dyingDark;
+        body = C.dyingBase; dark = C.dyingDark; light = C.dyingLight; comb = C.dyingDark;
       } else if (isOld) {
-        body = C.oldBody; dark = C.oldDark; light = C.oldLight; comb = C.oldDark;
+        body = C.oldBase; dark = C.oldDark; light = C.oldLight; comb = C.oldDark;
       } else if (isMale) {
         body = C.roosterBody; dark = C.roosterDark; light = C.roosterLight; comb = C.roosterComb;
       } else {
-        body = C.henBody; dark = C.henDark; light = C.henLight; comb = C.henComb;
+        body = C.henBase; dark = C.henDark; light = C.henLight; comb = C.henComb;
       }
 
       switch(ch) {
-        // Тело
         case 'R': case 'M': case 'G': case 'D': return body;
         case 'r': case 'm': case 'g': case 'd': return dark;
         case 'L': case 'n': case 'h': case 'f': return light;
-        // Гребень
         case 'C': return comb;
-        // Хвост (для петухов)
         case 'T': return C.roosterTail;
         case 't': return C.roosterTailDark;
         case 'l': return C.roosterTailLight;
@@ -648,11 +980,15 @@
       }
     }
 
-    // ========== ОТРИСОВКА МОДЕЛИ ==========
+    // ========== ОТРИСОВКА ==========
     function renderModel(canvas, model, modelType) {
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
+      // Заполняем фон
+      ctx.fillStyle = '#1e2a14';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
       for (let y = 0; y < SIZE; y++) {
         const row = model[y] || '';
         for (let x = 0; x < SIZE; x++) {
@@ -666,7 +1002,7 @@
       }
     }
 
-    // ========== СОЗДАНИЕ DOM ЭЛЕМЕНТОВ ==========
+    // ========== СОЗДАНИЕ КАРТОЧЕК ==========
     function createStageCard(stageName, model, modelType, genderClass) {
       const card = document.createElement('div');
       card.className = `stage-card ${genderClass}`;
@@ -676,10 +1012,10 @@
       nameDiv.textContent = stageName;
       
       const canvas = document.createElement('canvas');
-      canvas.width = SIZE * SCALE;
-      canvas.height = SIZE * SCALE;
-      canvas.style.width = '112px'; // Фиксированный размер для отображения
-      canvas.style.height = '112px';
+      canvas.width = SIZE;
+      canvas.height = SIZE;
+      canvas.style.width = DISPLAY_SIZE + 'px';
+      canvas.style.height = DISPLAY_SIZE + 'px';
       canvas.style.imageRendering = 'pixelated';
       
       renderModel(canvas, model, modelType);
@@ -689,7 +1025,7 @@
       return card;
     }
 
-    // ========== ЗАПОЛНЕНИЕ РЯДОВ ==========
+    // ========== ИНИЦИАЛИЗАЦИЯ ==========
     const maleRow = document.getElementById('maleRow');
     const femaleRow = document.getElementById('femaleRow');
 
